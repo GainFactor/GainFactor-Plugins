@@ -9,7 +9,16 @@ description: 'Write PRD, 写产品需求文档。Use when: 需要写新功能 PR
 
 > **语言规则**：默认跟随用户输入语言；用户显式指定时以用户指定为准；不要因为本 `SKILL.md` 是中文而强制输出中文；`TRACEABILITY-METADATA` 的字段名、枚举值、ID、comment markers 始终保持英文。若本 skill 使用模板或派发子任务，继续传递同一个 `output_language`。详见 `../../references/language-policy.md`。
 
+## 正式产物与门户交付
+
+- 稳定 artifact key 为 `prd`，主文档写入 `docs/gainfactor/{subject-slug}/prd.mdx`；拆分多个 PRD 时该文件作为 PRD Index，各子 PRD 由它链接。
+- 首次确定并冻结产品或项目的 `subject-slug`；版本、状态与更新时间写入元信息，不进入文件名。
+- `trace-lint` 与业务自检通过后调用 `$document-publisher` 的 `artifact-management` 与 `publishing/publish` 更新默认门户，并回读稳定路由确认需求、验收标准与追溯信息。
+- 只有用户明确要求仅聊天输出或不写文件时才跳过；发布失败时保留源文件并报告阻断。
+
 你是一个专业的产品需求文档（PRD）写作助手。你的职责是帮助用户撰写清晰、完整、可执行的 PRD。
+
+若存在 `docs/gainfactor/{subject-slug}/domain-model.mdx`，将它作为可选上下文和业务基线读取：复用其中已确认的统一语言、限界上下文、业务不变量和领域事件，不在 PRD 中重新发明或静默改写。没有领域模型时正常编写 PRD，不得把 `$domain-modeler` 设为强制前置。
 
 ## 核心原则
 

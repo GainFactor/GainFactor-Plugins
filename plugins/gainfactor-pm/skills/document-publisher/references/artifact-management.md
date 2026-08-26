@@ -10,12 +10,34 @@
 docs/gainfactor/{product-slug}/
 ├── product-definition.mdx
 ├── product-definition.portal.json
+├── brd.mdx
+├── brd.portal.json
+├── prd.mdx
+├── prd.portal.json
+├── user-journey.mdx
+├── user-journey.portal.json
 ├── user-persona.mdx
 ├── user-persona.portal.json
 ├── competitive-analysis.mdx
 ├── competitive-analysis.portal.json
 ├── product-metrics.mdx
 ├── product-metrics.portal.json
+├── domain-model.mdx
+├── domain-model.portal.json
+├── api-contract.mdx
+├── api-contract.portal.json
+├── hld.mdx
+├── hld.portal.json
+├── lld.mdx
+├── lld.portal.json
+├── test-strategy.mdx
+├── test-strategy.portal.json
+├── test-spec.mdx
+├── test-spec.portal.json
+├── runbook.mdx
+├── runbook.portal.json
+├── guardrails.mdx
+├── guardrails.portal.json
 ├── assets/{artifact-key}/
 └── .work/
 ```
@@ -31,9 +53,20 @@ docs/gainfactor/{product-slug}/
 | artifact key | 正文 | route slug |
 |---|---|---|
 | `product-definition` | `product-definition.mdx` | `{product-slug}-product-definition` |
+| `brd` | `brd.mdx` | `{product-slug}-brd` |
+| `prd` | `prd.mdx` | `{product-slug}-prd` |
+| `user-journey` | `user-journey.mdx` | `{product-slug}-user-journey` |
 | `user-persona` | `user-persona.mdx` | `{product-slug}-user-persona` |
 | `competitive-analysis` | `competitive-analysis.mdx` | `{product-slug}-competitive-analysis` |
 | `product-metrics` | `product-metrics.mdx` | `{product-slug}-metrics` |
+| `domain-model` | `domain-model.mdx` | `{product-slug}-domain-model` |
+| `api-contract` | `api-contract.mdx` | `{product-slug}-api-contract` |
+| `hld` | `hld.mdx` | `{product-slug}-hld` |
+| `lld` | `lld.mdx` | `{product-slug}-lld` |
+| `test-strategy` | `test-strategy.mdx` | `{product-slug}-test-strategy` |
+| `test-spec` | `test-spec.mdx` | `{product-slug}-test-spec` |
+| `runbook` | `runbook.mdx` | `{product-slug}-runbook` |
+| `guardrails` | `guardrails.mdx` | `{product-slug}-guardrails` |
 
 同一主体的文档使用 `{product-slug}` 导航组和产品显示名称作为 group title 与 collection。文件移动或人工迁移后继续使用原主体 slug 与 artifact key，不创建新身份。
 

@@ -44,6 +44,8 @@ lanes:
     title: 可选产品探索与上下文
   - id: main
     title: 主流程
+  - id: domain-modeling
+    title: 可选领域建模分支
   - id: prototype
     title: 可选 Prototype 分支
   - id: automation
@@ -68,6 +70,9 @@ artifacts:
   - id: PRD
     metadata_types: [PRD]
     filename_keywords: [prd]
+  - id: DOMAIN_MODEL
+    metadata_types: [DOMAIN_MODEL]
+    filename_keywords: [domain-model, domain_model, domain-modeling, 领域模型, 领域建模]
   - id: API_CONTRACT
     filename_keywords: [openapi, swagger, asyncapi, api-contract, api_contract, contract, graphql, schema, proto]
   - id: HLD
@@ -111,6 +116,9 @@ artifact_routes:
     creation_command: $prd-writer
     review_node: prd-reviewer
     review_command: $prd-reviewer
+  - artifact: DOMAIN_MODEL
+    creation_node: domain-modeler
+    creation_command: $domain-modeler
   - artifact: API_CONTRACT
     creation_node: api-writer
     creation_command: $api-writer
@@ -212,7 +220,7 @@ nodes:
     optional_context:
       - PRODUCT_DEFINITION: preferred
     produces: BRD
-    next: [uc-interviewer]
+    next: [domain-modeler, uc-interviewer]
 
   - id: uc-interviewer
     lane: main
@@ -220,6 +228,8 @@ nodes:
     command: $uc-interviewer
     requires:
       - BRD: approved_or_exists
+    optional_context:
+      - DOMAIN_MODEL: preferred_if_exists
     produces: USER_JOURNEY
     next: [prd-writer]
 
@@ -230,6 +240,8 @@ nodes:
     requires:
       - BRD: approved_or_exists
       - USER_JOURNEY: preferred
+    optional_context:
+      - DOMAIN_MODEL: preferred_if_exists
     produces: PRD
     next: [prd-reviewer]
 
@@ -241,6 +253,26 @@ nodes:
       - PRD: exists
     approves: PRD
     next: [api-writer]
+
+  - id: domain-modeler
+    lane: domain-modeling
+    kind: modeler
+    command: $domain-modeler
+    requires:
+      - BRD: approved_or_exists
+    optional_context:
+      - USER_JOURNEY: preferred
+      - PRD: preferred_if_exists
+    produces: DOMAIN_MODEL
+    show_when:
+      - explicit_domain_modeling
+      - brd_domain_modeling_handoff
+      - ambiguous_business_language
+      - complex_business_rules_or_lifecycle
+      - unclear_system_boundaries
+      - legacy_or_external_model_translation
+      - monolith_split
+    next: [uc-interviewer, prd-writer, api-writer, hld-writer]
 
   - id: prototype-designer
     lane: prototype
@@ -272,6 +304,8 @@ nodes:
     command: $api-writer
     requires:
       - PRD: approved
+    optional_context:
+      - DOMAIN_MODEL: preferred_if_exists
     produces: API_CONTRACT
     next: [api-reviewer]
 
@@ -292,6 +326,8 @@ nodes:
     requires:
       - PRD: approved
       - API_CONTRACT: approved
+    optional_context:
+      - DOMAIN_MODEL: preferred_if_exists
     produces: HLD
     next: [hld-reviewer]
 
@@ -339,6 +375,8 @@ nodes:
       - HLD: approved
       - TEST_STRATEGY: approved
       - GUARDRAILS: optional
+    optional_context:
+      - DOMAIN_MODEL: preferred_if_exists
     produces: LLD
     next: [lld-reviewer]
 

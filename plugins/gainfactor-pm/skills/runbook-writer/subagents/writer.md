@@ -294,5 +294,5 @@ Subagent:
     ```
 
     > Note: Writer 将完整 Runbook 内容包含在输出正文中，AGENT-RESULT 块放在最末尾。
-    > Controller 负责提取正文内容并保存到 `docs/runbook/[system-name]-runbook.md`。
+    > Controller 负责提取正文内容并保存到 `docs/gainfactor/{subject-slug}/runbook.mdx`，再按 document-publisher 契约发布。
 ```

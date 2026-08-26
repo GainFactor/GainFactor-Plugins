@@ -30,6 +30,8 @@
       "\u4f7f\u7528 $define-product \u5efa\u7acb\u53ef\u590d\u7528\u7684\u4ea7\u54c1\u5b9a\u4e49\u57fa\u7ebf\u3002",
       "\u4f7f\u7528 $document-publisher \u67e5\u770b\u5df2\u6709 PRD \u7b49\u95e8\u6237\u6587\u6863\uff0c\u6216\u8bbe\u8ba1\u3001\u9a8c\u8bc1\u548c\u53d1\u5e03\u95e8\u6237\u5185\u5bb9\u3002",
       "\u4f7f\u7528 $prd-writer \u6839\u636e\u9700\u6c42\u548c\u7528\u6237\u65c5\u7a0b\u64b0\u5199 PRD\u3002",
+      "使用 $domain-modeler 根据 BRD 或现有业务材料统一业务词汇，明确复杂规则和业务模型边界。",
+      "使用 $skill-doctor 创建、优化或审计 gainfactor-pm 中的 Skill。",
       "\u4f7f\u7528 $test-reviewer \u5ba1\u67e5\u6d4b\u8bd5\u5305\u662f\u5426\u8fbe\u5230\u51c6\u51fa\u6807\u51c6\u3002"
     ],
     "composerIcon": "./skills/guide/assets/gainfactor-pm-logo-small.png",

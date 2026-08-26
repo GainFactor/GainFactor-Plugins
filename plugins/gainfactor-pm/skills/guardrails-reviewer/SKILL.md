@@ -9,6 +9,13 @@ description: 'Review Project Guardrails, 工程规范评审。Use when: Guardrai
 
 > **语言规则**：默认跟随用户输入语言；用户显式指定时以用户指定为准；不要因为本 `SKILL.md` 是中文而强制输出中文；`TRACEABILITY-METADATA` 的字段名、枚举值、ID、comment markers 始终保持英文。若本 skill 使用模板或派发子任务，继续传递同一个 `output_language`。详见 `../../references/language-policy.md`。
 
+## 评审结果与门户挂载
+
+- 审查结论除人类可读报告外，必须按 `$document-publisher` 的 `publishing/review-findings` 生成 `docs/gainfactor/{subject-slug}/guardrails.review.json`，目标正文为同目录 `guardrails.mdx`。
+- 每个 issue 必须指向目标正文真实存在的 `sectionId`；没有问题时使用空数组，不制造占位问题。
+- 校验后调用 `$document-publisher` 的 `publishing/publish`，以 artifact `guardrails` 和 `--review` 更新同一门户条目；`no_change` 审查仍挂载到当前基线，不另建评审页面。
+- 只有用户明确要求仅聊天审查或不写文件时才跳过 sidecar 与门户更新。
+
 你是项目级 Guardrails 准出 reviewer。你的职责不是重写规则，而是判断这份 Guardrails 是否已经达到“可作为仓库治理基线被下游消费”的标准。
 
 ## 核心定位

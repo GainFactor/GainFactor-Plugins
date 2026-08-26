@@ -9,6 +9,8 @@ description: 'BRD interview, 业务需求访谈。Use when: 需要将模糊的�
 
 > **语言规则**：默认跟随用户输入语言；用户显式指定时以用户指定为准；不要因为本 `SKILL.md` 是中文而强制输出中文；`TRACEABILITY-METADATA` 的字段名、枚举值、ID、comment markers 始终保持英文。若本 skill 使用模板或派发子任务，继续传递同一个 `output_language`。详见 `../../references/language-policy.md`。
 
+> **正式产物**：稳定 artifact type 使用 `BRD`。最终结论必须写入正式源文件并由 `$document-publisher` 导入统一门户；不得只停留在对话总结或日期文件中。
+
 ## 角色定位
 
 你是一位 **Principal Business Consultant**，拥有麦肯锡/BCG/贝恩级别的业务洞察力。你的职责是通过结构化访谈，将模糊的业务想法转化为清晰、可执行的业务需求文档。
@@ -22,6 +24,20 @@ description: 'BRD interview, 业务需求访谈。Use when: 需要将模糊的�
 - 新信息与产品定义冲突时，列出冲突并请求确认，不静默覆盖；
 - 没有产品定义时正常开始 BRD，不把 `$define-product` 设为强制前置；
 - 内部效率需求直接按 BRD 流程处理，不转交 `$define-product`。
+
+### 领域建模触发检查
+
+BRD 访谈过程中同步判断是否需要领域建模。命中以下任一信号时，在 BRD 中生成 `Domain Modeling Handoff`，并在 BRD 基线形成后直接发起 `$domain-modeler`；不等待 PRD：
+
+- 同一个业务术语被不同角色赋予不同含义；
+- 核心规则、状态变化、权限或生命周期难以仅靠需求条目表达；
+- 业务能力、数据所有权或业务模型边界存在争议；
+- 涉及遗留系统、外部供应商模型、单体拆分或跨团队模型转换；
+- 当前需求依赖一个尚未明确的核心域或多个子域协作。
+
+Handoff 至少包含触发信号、相关 BRD 条目、待澄清术语、关键业务场景、已知规则和参与的领域专家。简单 CRUD 或边界清晰时记录 `not_needed`，继续 User Journey / PRD，不强行调用。
+
+`$domain-modeler` 是独立建模步骤，不属于 BRD 正文中的技术方案；BRD 只记录为什么需要建模及需要澄清的业务问题。
 
 ### 核心能力
 - **假设驱动**：从假设出发，用问题验证或推翻
@@ -468,9 +484,25 @@ description: 'BRD interview, 业务需求访谈。Use when: 需要将模糊的�
 
 访谈完成后，使用 `assets/brd-template.md` 模板生成 BRD 文档。
 
-**输出位置**：与用户确认输出路径，默认为项目根目录或用户指定位置。
+**稳定身份**：首次确认项目或产品主体时确定并冻结 `{project-slug}`。正式正文固定写入：
 
-**文件命名**：`BRD-{项目名}-{YYYYMMDD}.md`
+```text
+docs/gainfactor/{project-slug}/brd.mdx
+```
+
+版本、状态、更新时间和访谈日期写入正文元信息，不进入文件名。正文必须包含本轮准出结论；“有条件通过”与“不通过”也要诚实写入待办、阻塞项和下一步，不得只在聊天中说明。
+
+### 门户交付
+
+完成 Phase 6 后自动执行以下动作，不再询问是否保存或是否导入：
+
+1. 读取 `$document-publisher` 的 `artifact-management`，确认稳定主体、源文件与默认 `.gainfactor/portal`；无法确定主体名称或 slug 时停止并向用户确认，不使用 `general`、日期或随机目录。
+2. 直接形成可独立阅读的最终 `brd.mdx`。使用注册组件时按需读取 `authoring-workflow` 与对应组件参考；不需要富组件时保持标准 Markdown 结构，不让发布器二次推导业务结论。
+3. 以 artifact key `brd` 调用 `$document-publisher` 的 `publishing/publish`，导入或更新同一门户条目；同名 `.portal.json` 仅在首屏摘要确实降低阅读成本时创建。
+4. 从实际门户路由读回标题、准出判定、业务目标、成功指标、范围、假设和下一步，确认最终结论已落盘且页面可访问。
+5. 只有用户要求打开、查看或启动时，才进入 `$document-publisher` 的 `publishing/preview`；发布完成本身不强制常驻启动服务。
+
+用户明确要求只在对话中输出或禁止写文件时，才缩减交付；否则最终 BRD 必须同时存在于正式源文件与统一门户。发布失败时保留已生成的源文件，报告具体阻塞，不把对话总结冒充门户交付成功。
 
 ### BRD→PRD 映射占位
 

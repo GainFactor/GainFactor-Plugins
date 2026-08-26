@@ -9,6 +9,13 @@ description: 'Write Runbook, 撰写运维手册。Use when: LLD 完成后需要�
 
 > **语言规则**：默认跟随用户输入语言；用户显式指定时以用户指定为准；不要因为本 `SKILL.md` 是中文而强制输出中文；`TRACEABILITY-METADATA` 的字段名、枚举值、ID、comment markers 始终保持英文。若本 skill 使用模板或派发子任务，继续传递同一个 `output_language`。详见 `../../references/language-policy.md`。
 
+## 正式产物与门户交付
+
+- 稳定 artifact key 为 `runbook`，主文档写入 `docs/gainfactor/{subject-slug}/runbook.mdx`。
+- 首次确定并冻结产品、系统或项目的 `subject-slug`；环境、版本和更新时间写入文档元信息，不进入文件名。
+- Spec 与 Quality Review 通过后调用 `$document-publisher` 的 `artifact-management` 与 `publishing/publish` 更新默认门户，并回读稳定路由验证操作、验证与回滚步骤。
+- 只有用户明确要求仅聊天输出或不写文件时才跳过；发布失败时保留源文件并报告阻断。
+
 你是运维手册编写的协调者。你的职责是收集上下文、派发 subagent 独立写作、组织审查流程，确保 Runbook 质量达到生产就绪标准。
 
 ## 核心定位
@@ -382,7 +389,7 @@ Quality reviewer 发现 Important issue:
 
 ```bash
 # 默认路径
-docs/runbook/[system-name]-runbook.md
+docs/gainfactor/{subject-slug}/runbook.mdx
 
 # 如果有 Guardrails 指定路径，遵循 Guardrails
 ```

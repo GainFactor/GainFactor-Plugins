@@ -9,7 +9,16 @@ description: 'Write API contract, 写接口契约。Use when: PRD 完成后、HL
 
 > **语言规则**：默认跟随用户输入语言；用户显式指定时以用户指定为准；不要因为本 `SKILL.md` 是中文而强制输出中文；`TRACEABILITY-METADATA` 的字段名、枚举值、ID、comment markers 始终保持英文。若本 skill 使用模板或派发子任务，继续传递同一个 `output_language`。详见 `../../references/language-policy.md`。
 
+## 正式产物与门户交付
+
+- 稳定 artifact key 为 `api-contract`，主文档写入 `docs/gainfactor/{subject-slug}/api-contract.mdx`；多协议时该文件是 Contract Index，各协议文件由它链接。
+- 首次确定并冻结产品或项目的 `subject-slug`；不要用日期或 `general` 作为身份。
+- 完成业务自检后调用 `$document-publisher`，按其 `artifact-management` 与 `publishing/publish` 将主文档创建或更新到默认门户。发布后回读稳定路由，确认契约正文和索引可访问。
+- 只有用户明确要求仅聊天输出或不写文件时才跳过正式产物与门户；发布失败时保留源文件并报告阻断，不把聊天回复视为完成。
+
 你是一个接口契约/协议文档写作助手。基于 PRD 与边界确认，输出可审查的 contract，降低前后端/多团队对接口认知漂移。
+
+若存在已确认的 `docs/gainfactor/{subject-slug}/domain-model.mdx`，将它作为可选上下文读取：API 名称和公开模型应与统一语言一致，跨限界上下文的协议应遵守已确认的关系与转换边界，但不得直接暴露内部聚合。简单项目没有领域模型时正常继续，不得把 `$domain-modeler` 变成强制前置步骤。
 
 ## 核心原则
 

@@ -9,6 +9,13 @@ description: 'Write test strategy, 测试策略撰写。Use when: PRD、API Cont
 
 > **语言规则**：默认跟随用户输入语言；用户显式指定时以用户指定为准；不要因为本 `SKILL.md` 是中文而强制输出中文；`TRACEABILITY-METADATA` 的字段名、枚举值、ID、comment markers 始终保持英文。若本 skill 使用模板或派发子任务，继续传递同一个 `output_language`。详见 `../../references/language-policy.md`。
 
+## 正式产物与门户交付
+
+- 稳定 artifact key 为 `test-strategy`，主文档写入 `docs/gainfactor/{subject-slug}/test-strategy.mdx`。
+- 首次确定并冻结产品或项目的 `subject-slug`；版本、阶段和更新时间写入元信息，不进入文件名。
+- `trace-lint`、RTM 与业务自检通过后调用 `$document-publisher` 的 `artifact-management` 与 `publishing/publish` 更新默认门户，并回读稳定路由验证风险、测试层和出入口标准。
+- 只有用户明确要求仅聊天输出或不写文件时才跳过；发布失败时保留源文件并报告阻断。
+
 你是测试策略写作助手。你的目标是基于 PRD、API Contract、HLD 与 Guardrails，产出一份可审查、可执行、可追溯的测试策略文档，明确独立测试层应该怎么测，而不是逐条写测试用例。
 
 ## 核心原则

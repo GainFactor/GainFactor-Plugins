@@ -4,14 +4,14 @@
 
 ## 能力范围
 
-gainfactor-pm 当前包含 25 个可调用 Skill：
+gainfactor-pm 当前包含 27 个可调用 Skill：
 
 - **流程导航**：`guide`
 - **产品研究**：`define-product`、`user-persona`、`competitive-analysis`、`product-metrics`
 - **需求与交互**：`brd-interviewer`、`uc-interviewer`、`prd-writer`、`prd-reviewer`、`prototype-designer`、`prototype-reviewer`
-- **接口与设计**：`api-writer`、`api-reviewer`、`hld-writer`、`hld-reviewer`、`lld-writer`、`lld-reviewer`
+- **领域与技术设计**：`domain-modeler`、`api-writer`、`api-reviewer`、`hld-writer`、`hld-reviewer`、`lld-writer`、`lld-reviewer`
 - **测试与交付**：`test-strategy-writer`、`test-strategy-reviewer`、`test-spec-writer`、`test-reviewer`、`runbook-writer`
-- **项目规范**：`guardrails-writer`、`guardrails-reviewer`
+- **项目规范与 Skill 治理**：`guardrails-writer`、`guardrails-reviewer`、`skill-doctor`
 - **文档门户**：`document-publisher`
 
 本插件不包含测试平台中的 case 注册、pipeline 编排、trigger 或 execution 管理能力。README 只描述当前插件实际提供的 Skill。
@@ -57,7 +57,10 @@ flowchart LR
 flowchart TD
     A[业务想法] --> B["$brd-interviewer"]
     B --> C[BRD]
-    C --> D["$uc-interviewer"]
+    C --> X{需要领域建模?}
+    X -->|是| Y["$domain-modeler"]
+    Y --> D["$uc-interviewer"]
+    X -->|否| D
     D --> E[User Journey]
     E --> F["$prd-writer"]
     F --> G["$prd-reviewer"]
@@ -80,7 +83,7 @@ flowchart TD
     V --> W[Runbook]
 ```
 
-原型是前端项目中的可选验证阶段。API Contract、HLD、Test Strategy、LLD 和 Test Spec 分别由 Writer 生成，再由对应 Reviewer 作为独立门禁评审。
+领域建模通常由 BRD 识别后，在 User Journey / PRD 之前启动；已有业务材料时也可以独立进行。它只在业务术语、复杂规则、生命周期或业务模型边界不清时使用，简单 CRUD 不需要先建模。原型是 PRD 后的可选验证阶段。API Contract、HLD、Test Strategy、LLD 和 Test Spec 分别由 Writer 生成，再由对应 Reviewer 作为独立门禁评审。
 
 ### 项目级 Guardrails
 
@@ -123,6 +126,7 @@ flowchart LR
 | 把业务想法整理成 BRD | `$brd-interviewer` |
 | 从 BRD 梳理用户旅程 | `$uc-interviewer` |
 | 撰写或评审 PRD | `$prd-writer` / `$prd-reviewer` |
+| 统一业务词汇、梳理复杂规则和业务模型边界 | `$domain-modeler` |
 | 在前端仓库创建或评审交互原型 | `$prototype-designer` / `$prototype-reviewer` |
 | 撰写或评审 API Contract | `$api-writer` / `$api-reviewer` |
 | 撰写或评审 HLD | `$hld-writer` / `$hld-reviewer` |
@@ -178,9 +182,20 @@ $product-metrics 基于 ./docs/gainfactor/example-product/product-definition.mdx
 ```text
 docs/gainfactor/{product-slug}/
 ├── product-definition.mdx
+├── brd.mdx
+├── prd.mdx
+├── user-journey.mdx
 ├── user-persona.mdx
 ├── competitive-analysis.mdx
 ├── product-metrics.mdx
+├── domain-model.mdx
+├── api-contract.mdx
+├── hld.mdx
+├── lld.mdx
+├── test-strategy.mdx
+├── test-spec.mdx
+├── runbook.mdx
+├── guardrails.mdx
 ├── assets/{artifact-key}/
 └── .work/
 

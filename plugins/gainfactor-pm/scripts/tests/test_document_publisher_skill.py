@@ -171,10 +171,21 @@ class DocumentPublisherSkillTest(unittest.TestCase):
     def test_upstream_skills_only_reference_current_shortcuts(self) -> None:
         retired = {"publish-create", "publish-update", "preview-and-gate"}
         upstream_files = [
+            PLUGIN_ROOT / "skills/api-writer/SKILL.md",
+            PLUGIN_ROOT / "skills/brd-interviewer/SKILL.md",
+            PLUGIN_ROOT / "skills/guardrails-writer/SKILL.md",
+            PLUGIN_ROOT / "skills/hld-writer/SKILL.md",
+            PLUGIN_ROOT / "skills/lld-writer/SKILL.md",
+            PLUGIN_ROOT / "skills/prd-writer/SKILL.md",
+            PLUGIN_ROOT / "skills/runbook-writer/SKILL.md",
+            PLUGIN_ROOT / "skills/test-spec-writer/SKILL.md",
+            PLUGIN_ROOT / "skills/test-strategy-writer/SKILL.md",
+            PLUGIN_ROOT / "skills/uc-interviewer/SKILL.md",
             PLUGIN_ROOT / "skills/define-product/SKILL.md",
             PLUGIN_ROOT / "skills/user-persona/SKILL.md",
             PLUGIN_ROOT / "skills/product-metrics/SKILL.md",
             PLUGIN_ROOT / "skills/competitive-analysis/SKILL.md",
+            PLUGIN_ROOT / "skills/domain-modeler/SKILL.md",
         ]
         for source in upstream_files:
             text = source.read_text(encoding="utf-8")
@@ -184,10 +195,21 @@ class DocumentPublisherSkillTest(unittest.TestCase):
 
     def test_portal_skills_use_stable_product_artifact_paths(self) -> None:
         expected = {
+            "brd-interviewer": "docs/gainfactor/{project-slug}/brd.mdx",
+            "prd-writer": "docs/gainfactor/{subject-slug}/prd.mdx",
+            "uc-interviewer": "docs/gainfactor/{subject-slug}/user-journey.mdx",
+            "api-writer": "docs/gainfactor/{subject-slug}/api-contract.mdx",
+            "hld-writer": "docs/gainfactor/{subject-slug}/hld.mdx",
+            "lld-writer": "docs/gainfactor/{subject-slug}/lld.mdx",
+            "test-strategy-writer": "docs/gainfactor/{subject-slug}/test-strategy.mdx",
+            "test-spec-writer": "docs/gainfactor/{subject-slug}/test-spec.mdx",
+            "runbook-writer": "docs/gainfactor/{subject-slug}/runbook.mdx",
+            "guardrails-writer": "docs/gainfactor/{subject-slug}/guardrails.mdx",
             "define-product": "docs/gainfactor/{product-slug}/product-definition.mdx",
             "user-persona": "docs/gainfactor/{product-slug}/user-persona.mdx",
             "competitive-analysis": "docs/gainfactor/{product-slug}/competitive-analysis.mdx",
             "product-metrics": "docs/gainfactor/{product-slug}/product-metrics.mdx",
+            "domain-modeler": "docs/gainfactor/{subject-slug}/domain-model.mdx",
         }
         for skill, path in expected.items():
             files = [
@@ -198,6 +220,7 @@ class DocumentPublisherSkillTest(unittest.TestCase):
             with self.subTest(skill=skill):
                 self.assertIn(path, documented)
                 self.assertNotIn("{产品名}-{YYYYMMDD}", documented)
+                self.assertNotIn("{项目名}-{YYYYMMDD}", documented)
 
     def test_artifact_management_is_a_routed_reference(self) -> None:
         entry = (SKILL_ROOT / "SKILL.md").read_text(encoding="utf-8")
@@ -211,11 +234,48 @@ class DocumentPublisherSkillTest(unittest.TestCase):
             "assets/{artifact-key}/",
             ".work/",
             "product-definition",
+            "brd",
+            "prd",
+            "user-journey",
             "user-persona",
             "competitive-analysis",
             "product-metrics",
+            "domain-model",
+            "api-contract",
+            "hld",
+            "lld",
+            "test-strategy",
+            "test-spec",
+            "runbook",
+            "guardrails",
         ):
             self.assertIn(expected, text)
+
+    def test_reviewers_mount_sidecars_on_their_source_artifacts(self) -> None:
+        expected = {
+            "api-reviewer": ("api-contract.review.json", "api-contract"),
+            "guardrails-reviewer": ("guardrails.review.json", "guardrails"),
+            "hld-reviewer": ("hld.review.json", "hld"),
+            "lld-reviewer": ("lld.review.json", "lld"),
+            "test-reviewer": ("test-spec.review.json", "test-spec"),
+            "test-strategy-reviewer": ("test-strategy.review.json", "test-strategy"),
+        }
+        for skill, (sidecar, artifact) in expected.items():
+            text = (PLUGIN_ROOT / f"skills/{skill}/SKILL.md").read_text(encoding="utf-8")
+            with self.subTest(skill=skill):
+                self.assertIn("$document-publisher", text)
+                self.assertIn("publishing/review-findings", text)
+                self.assertIn(sidecar, text)
+                self.assertIn(f"artifact `{artifact}`", text)
+
+    def test_portal_writers_do_not_restore_legacy_runbook_or_dated_journey_paths(self) -> None:
+        runbook = "\n".join(
+            path.read_text(encoding="utf-8")
+            for path in (PLUGIN_ROOT / "skills/runbook-writer").rglob("*.md")
+        )
+        journey = (PLUGIN_ROOT / "skills/uc-interviewer/SKILL.md").read_text(encoding="utf-8")
+        self.assertNotIn("docs/runbook/[system-name]-runbook.md", runbook)
+        self.assertNotIn("User-Journeys-{项目名}-{YYYYMMDD}.md", journey)
 
     def test_retired_document_review_skill_has_no_routes(self) -> None:
         retired = "document-" + "review"
