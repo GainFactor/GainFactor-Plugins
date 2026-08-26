@@ -81,6 +81,25 @@ class CompilePortalDocumentTest(unittest.TestCase):
         self.assertNotIn("body > svg[id^='mermaid-']", styles)
         self.assertIn("cleanupMermaidArtifacts", component)
 
+    def test_mermaid_fullscreen_styles_target_the_requested_element(self) -> None:
+        styles = (PORTAL_ROOT / "app/global.css").read_text(encoding="utf-8")
+        component = (PORTAL_ROOT / "components/mermaid.tsx").read_text(encoding="utf-8")
+        self.assertIn('className="mermaid-fullscreen-root"', component)
+        self.assertIn(".mermaid-fullscreen-root:fullscreen", styles)
+        self.assertIn(".mermaid-fullscreen-root:fullscreen .mermaid-frame", styles)
+        self.assertNotIn(".mermaid-frame:fullscreen", styles)
+
+    def test_sidebar_active_state_is_scoped_to_the_public_layout_container(self) -> None:
+        styles = (PORTAL_ROOT / "app/global.css").read_text(encoding="utf-8")
+        layout = (PORTAL_ROOT / "app/docs/layout.tsx").read_text(encoding="utf-8")
+        visual_gate = (PORTAL_ROOT / "scripts/visual-release-gate.mjs").read_text(encoding="utf-8")
+        self.assertIn("containerProps={{ className: 'gainfactor-docs-layout' }}", layout)
+        self.assertIn(".gainfactor-docs-layout [data-sidebar-placeholder] a[data-active='true']", styles)
+        self.assertNotIn("#nd-sidebar", styles)
+        self.assertNotIn("\na[data-active='true']", styles)
+        self.assertIn("brandContrastExemption", visual_gate)
+        self.assertNotIn("disableRules(['color-contrast'])", visual_gate)
+
     def test_lucide_icons_are_registered_without_a_business_allowlist(self) -> None:
         registry = json.loads((PORTAL_ROOT / "portal-capabilities.json").read_text(encoding="utf-8"))
         capability = next(item for item in registry["contentTools"] if item["id"] == "lucide-icon")

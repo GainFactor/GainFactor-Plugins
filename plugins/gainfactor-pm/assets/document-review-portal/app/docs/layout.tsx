@@ -6,7 +6,7 @@ import { DocsHeader } from '@/components/docs-header';
 
 export default function Layout({ children }: LayoutProps<'/docs'>) {
   return (
-    <DocsLayout tree={source.getPageTree()} {...baseOptions()} sidebar={{ banner: <FullSearchTrigger className="sidebar-search" /> }} slots={{ header: DocsHeader }}>
+    <DocsLayout tree={source.getPageTree()} {...baseOptions()} containerProps={{ className: 'gainfactor-docs-layout' }} sidebar={{ banner: <FullSearchTrigger className="sidebar-search" /> }} slots={{ header: DocsHeader }}>
         {children}
     </DocsLayout>
   );
