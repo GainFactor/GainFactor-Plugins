@@ -179,7 +179,7 @@ export function Mermaid({ chart }: { chart: string }) {
   };
 
   return (
-    <div ref={containerRef}>
+    <div ref={containerRef} className="mermaid-fullscreen-root">
     <FigureFrame className="mermaid-frame" title="流程图" actions={
         <span className="mermaid-controls">
           {controls.map(({ icon: Icon, label, delta }) => (
