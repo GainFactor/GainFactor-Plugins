@@ -1,6 +1,6 @@
 ---
 name: document-publisher
-description: Design and publish documents for the GainFactor local document portal. Use when writing final portal MDX, using registered portal components, validating portal manifests, importing or updating a completed document, attaching review findings, or verifying and previewing a GainFactor portal publication. Do not use for general Markdown writing or unrelated web publishing.
+description: Read, preview, design, and publish documents in the GainFactor local document portal. Use when opening an existing PRD or other portal document, writing final portal MDX, using registered components, validating manifests, importing or updating a document, attaching review findings, or verifying a portal publication. Do not use for general Markdown writing or unrelated web publishing.
 ---
 
 # Document Publisher
@@ -24,7 +24,7 @@ description: Design and publish documents for the GainFactor local document port
 - **只验证现有 MDX / manifest — [`validation`](references/validation.md)**：只检查源文件、引用和内容契约，不构建门户。
 - **发布或更新最终文档 — [`publishing/publish`](references/publishing/publish.md)**：门户发现、导入、构建、视觉门禁与发布状态。
 - **挂载结构化评审结果 — [`publishing/review-findings`](references/publishing/review-findings.md)**。
-- **打开、关闭或检查门户 — [`publishing/preview`](references/publishing/preview.md)**：只有用户要求运行或预览时读取。
+- **查看已有 PRD 或其他门户文档，打开、关闭或检查门户 — [`publishing/preview`](references/publishing/preview.md)**：用户要求阅读、定位、运行或预览已有文档时读取。
 - **发布、构建或预览失败 — [`publishing/troubleshooting`](references/publishing/troubleshooting.md)**：仅在失败发生后读取。
 
 ### 上游 Skill 集成

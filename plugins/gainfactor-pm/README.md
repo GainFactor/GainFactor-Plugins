@@ -109,7 +109,7 @@ flowchart LR
 职责边界：
 
 - **业务 Skill** 决定报告体裁、结构、结论、字段和表达选择，并直接写出最终内容。
-- **`document-publisher`** 提供门户已注册能力、组件契约、选择规则、Markdown 降级，以及门户发现、创建、更新、评审挂载、构建、验证和预览流程；发布阶段不把普通 Markdown 二次理解成报告。
+- **`document-publisher`** 用于查看和定位已有 PRD、产品定义、用户画像、竞品分析、指标报告等门户文档，也提供门户已注册能力、组件契约、Markdown 降级，以及创建、更新、评审挂载、构建、验证和预览流程；发布阶段不把普通 Markdown 二次理解成报告。
 
 ## Skill 选择表
 
@@ -131,7 +131,7 @@ flowchart LR
 | 撰写测试规格或执行测试门禁评审 | `$test-spec-writer` / `$test-reviewer` |
 | 编写部署、回滚、监控与故障处理手册 | `$runbook-writer` |
 | 建立或评审项目级工程规范 | `$guardrails-writer` / `$guardrails-reviewer` |
-| 设计门户内容，或将已完成文档导入、验证和预览 | `$document-publisher` |
+| 查看已有 PRD 等门户文档，或设计、导入、验证和预览门户内容 | `$document-publisher` |
 
 ## 产品研究产物
 
