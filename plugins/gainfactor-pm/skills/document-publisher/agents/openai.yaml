@@ -1,6 +1,6 @@
 interface:
   display_name: "文档构建与发布"
-  short_description: "设计、验证、发布和预览 GainFactor 门户文档"
+  short_description: "查看、设计、验证和发布 PRD 等门户文档"
   icon_small: "./assets/gainfactor-pm-logo-small.png"
   icon_large: "./assets/gainfactor-pm-logo.png"
-  default_prompt: "使用 $document-publisher 按当前场景选择最小必要参考，完成门户文档设计、验证、导入、评审挂载、构建或预览。"
+  default_prompt: "使用 $document-publisher 查看已有 PRD 等门户文档，或按当前场景完成文档设计、验证、导入、发布与预览。"
