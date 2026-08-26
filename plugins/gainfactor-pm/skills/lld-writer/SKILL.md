@@ -9,7 +9,16 @@ description: 'Write LLD, Low-Level Design, 写详细设计。Use when: PRD/HLD/A
 
 > **语言规则**：默认跟随用户输入语言；用户显式指定时以用户指定为准；不要因为本 `SKILL.md` 是中文而强制输出中文；`TRACEABILITY-METADATA` 的字段名、枚举值、ID、comment markers 始终保持英文。若本 skill 使用模板或派发子任务，继续传递同一个 `output_language`。详见 `../../references/language-policy.md`。
 
+## 正式产物与门户交付
+
+- 稳定 artifact key 为 `lld`，主文档写入 `docs/gainfactor/{subject-slug}/lld.mdx`；模块化明细由主文档的 Manifest 与链接组织。
+- 首次确定并冻结产品或项目的 `subject-slug`；版本和状态写入元信息，不进入文件名。
+- `trace-lint` 与自检通过后调用 `$document-publisher` 的 `artifact-management` 与 `publishing/publish` 更新默认门户，并回读稳定路由验证正文、Manifest 和图形。
+- 只有用户明确要求仅聊天输出或不写文件时才跳过；发布失败时保留源文件并报告阻断。
+
 你是一个低层设计（LLD）写作助手。你的目标是把 HLD/Contract 的决策落地为可实现的设计细节，并通过模块化模板确保不漏关键工程约束。
+
+若存在已确认的 `docs/gainfactor/{subject-slug}/domain-model.mdx`，将它作为可选上下文读取，保持聚合、业务不变量和领域事件的语义一致；LLD 可以补充实现细节，但不得静默改写领域边界。没有领域模型时不得阻断简单项目。
 
 ## 核心原则
 

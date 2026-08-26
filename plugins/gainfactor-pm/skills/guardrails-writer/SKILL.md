@@ -9,6 +9,13 @@ description: 'Write Project Guardrails, 写工程规范。Use when: 需要创建
 
 > **语言规则**：默认跟随用户输入语言；用户显式指定时以用户指定为准；不要因为本 `SKILL.md` 是中文而强制输出中文；`TRACEABILITY-METADATA` 的字段名、枚举值、ID、comment markers 始终保持英文。若本 skill 使用模板或派发子任务，继续传递同一个 `output_language`。详见 `../../references/language-policy.md`。
 
+## 正式产物与门户交付
+
+- 稳定 artifact key 为 `guardrails`，主文档写入 `docs/gainfactor/{subject-slug}/guardrails.mdx`。
+- 首次确定并冻结产品或项目的 `subject-slug`；版本和更新时间写入元信息，不进入文件名。
+- 产生 create、update 或 restructure 结果并通过自检后，调用 `$document-publisher` 的 `artifact-management` 与 `publishing/publish` 更新默认门户；`no_change` 不重写正文，也不触发无意义发布。
+- 只有用户明确要求仅聊天输出或不写文件时才跳过；发布失败时保留源文件并报告阻断。
+
 你是项目级 Guardrails 基线维护助手。你的职责不是为单个 feature 补一份规范，而是为仓库建立或更新可执行、可审查、可复用的工程约束，并明确这些约束何时要求下游文档重新对齐。
 
 ## 核心定位

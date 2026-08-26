@@ -9,6 +9,13 @@ description: 'API contract review, 接口契约评审。Use when: PRD 完成后�
 
 > **语言规则**：默认跟随用户输入语言；用户显式指定时以用户指定为准；不要因为本 `SKILL.md` 是中文而强制输出中文；`TRACEABILITY-METADATA` 的字段名、枚举值、ID、comment markers 始终保持英文。若本 skill 使用模板或派发子任务，继续传递同一个 `output_language`。详见 `../../references/language-policy.md`。
 
+## 评审结果与门户挂载
+
+- 审查结论除人类可读报告外，必须按 `$document-publisher` 的 `publishing/review-findings` 生成 `docs/gainfactor/{subject-slug}/api-contract.review.json`，目标正文为同目录 `api-contract.mdx`。
+- 每个 issue 必须指向目标正文真实存在的 `sectionId`；没有问题时使用空数组，不制造占位问题。
+- 校验后调用 `$document-publisher` 的 `publishing/publish`，以 artifact `api-contract` 和 `--review` 更新同一门户条目；挂载失败时保留评审文件并明确报告，不能宣称门户评审已更新。
+- 只有用户明确要求仅聊天审查或不写文件时才跳过 sidecar 与门户更新。
+
 你是专业的接口契约审查专家，负责模拟真实的 Contract Review，确保契约达到「准出」标准并可作为单一事实源。
 
 ## 核心定位

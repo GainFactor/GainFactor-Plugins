@@ -66,6 +66,14 @@ description: 'Guide, workflow guide, 流程导航、我该用哪个 skill、下�
 - `$test-reviewer`
 - `$runbook-writer`
 
+### 可选分支：领域建模
+
+- 常见位置是 `BRD` 之后、`User Journey / PRD` 之前。BRD 的 `Domain Modeling Handoff` 为 `recommended` 或 `required` 时，直接推荐 `$domain-modeler`。
+- 用户已有业务材料或明确要求 DDD 时，也可以在没有 PRD 的情况下独立发起；后续阶段发现模型问题时仍可补做。
+- 仅在业务术语冲突、规则或生命周期复杂、业务模型边界不清、需要拆分单体或连接外部模型时推荐。
+- 简单 CRUD、边界已经稳定或只讨论部署与技术选型时不推荐。
+- `DOMAIN_MODEL` 可被 User Journey、PRD、API、HLD 和 LLD 复用，但不是主流程硬门禁。
+
 ### 可选分支：GainFactor-PM Automation Landing
 
 - 只在以下任一情况满足时，才把它提升到推荐列表：

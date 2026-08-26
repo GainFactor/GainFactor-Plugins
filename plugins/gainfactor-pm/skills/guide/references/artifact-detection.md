@@ -148,6 +148,24 @@ Guide 不需要做到“100% 自动理解所有文档”，但必须做到：
 - 其次 `PRD 准出证书`
 - 再次文档状态行
 
+### 可选上下文：DOMAIN_MODEL
+
+强信号：
+
+- `TRACEABILITY-METADATA` 中 `artifact.type: DOMAIN_MODEL`
+- 标题明确为“领域模型”或 `Domain Model`
+- 同时包含团队共同使用的业务语言（Ubiquitous Language）、业务能力分类、业务模型适用边界（Bounded Context）和模型协作关系
+
+弱信号：
+
+- 文件名含 `domain-model`、`domain_model` 或“领域建模”
+
+注意：
+
+- 普通数据模型、数据库 ER 图或类图不能判为正式领域模型
+- 该 artifact 是按复杂度触发的可选上下文，不参与主流程最早阻塞点计算
+- API、HLD 和 LLD 在它存在时应读取；不存在时不得把它当成硬阻塞
+
 ### 4. API_CONTRACT
 
 强信号：

@@ -9,9 +9,18 @@ description: 'User journey interview, use case interview, 用户旅程访谈。U
 
 > **语言规则**：默认跟随用户输入语言；用户显式指定时以用户指定为准；不要因为本 `SKILL.md` 是中文而强制输出中文；`TRACEABILITY-METADATA` 的字段名、枚举值、ID、comment markers 始终保持英文。若本 skill 使用模板或派发子任务，继续传递同一个 `output_language`。详见 `../../references/language-policy.md`。
 
+## 正式产物与门户交付
+
+- 稳定 artifact key 为 `user-journey`，主文档写入 `docs/gainfactor/{subject-slug}/user-journey.mdx`。
+- 首次确定并冻结产品或项目的 `subject-slug`；版本、checkpoint 状态和更新时间写入元信息，不进入文件名。
+- `trace-lint` 和 checkpoint 判定完成后调用 `$document-publisher` 的 `artifact-management` 与 `publishing/publish` 更新默认门户，并回读稳定路由验证 Journey Graph、跳转与边界情况。
+- 只有用户明确要求仅聊天输出或不写文件时才跳过；发布失败时保留源文件并报告阻断。
+
 ## 角色定位
 
 你是一位 **用户体验专家**，擅长将业务需求拆解为具体的用户操作流程。你的职责是通过结构化访谈，确保每个用户旅程的路径、边界、异常处理都与用户预期对齐。
+
+若 BRD 已发起领域建模且存在 `docs/gainfactor/{subject-slug}/domain-model.mdx`，将它作为可选上下文和业务基线读取：旅程中的角色、动作、状态与边界使用已确认的统一语言；发现冲突时返回领域模型补充确认。没有领域模型时正常执行，不得阻断简单流程。
 
 ### 核心能力
 - **场景化思维**：从用户视角出发，还原真实使用场景
@@ -371,9 +380,7 @@ options:
 - 稳定 `FLOW-*` Journey ID、`source_documents`、`relations`
 - checkpoint decision、review record、Journey Graph、跳转表、步骤级 Edge Case Matrix
 
-**输出位置**：与用户确认，默认为 `{项目路径}/docs/user-journeys.md`
-
-**文件命名**：`User-Journeys-{项目名}-{YYYYMMDD}.md`
+**输出位置**：`docs/gainfactor/{subject-slug}/user-journey.mdx`。主体不明确时先确认并冻结 `subject-slug`。
 
 #### 4.2 trace-lint 与 checkpoint 状态
 

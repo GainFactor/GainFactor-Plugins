@@ -28,6 +28,7 @@ GROUPS = {
             "BRD",
             "PRD",
             "USER-JOURNEY",
+            "DOMAIN-MODEL",
         },
     },
     "technical-design": {"title": "技术设计", "types": {"API", "API-CONTRACT", "HLD", "LLD"}},
@@ -39,9 +40,20 @@ GROUPS = {
 }
 ARTIFACTS = {
     "product-definition": {"routeSuffix": "product-definition", "documentType": "Product-Definition"},
+    "brd": {"routeSuffix": "brd", "documentType": "BRD"},
+    "prd": {"routeSuffix": "prd", "documentType": "PRD"},
+    "user-journey": {"routeSuffix": "user-journey", "documentType": "User-Journey"},
     "user-persona": {"routeSuffix": "user-persona", "documentType": "User-Persona"},
     "competitive-analysis": {"routeSuffix": "competitive-analysis", "documentType": "Competitive-Analysis"},
     "product-metrics": {"routeSuffix": "metrics", "documentType": "Product-Metrics"},
+    "domain-model": {"routeSuffix": "domain-model", "documentType": "Domain-Model"},
+    "api-contract": {"routeSuffix": "api-contract", "documentType": "API-Contract"},
+    "hld": {"routeSuffix": "hld", "documentType": "HLD"},
+    "lld": {"routeSuffix": "lld", "documentType": "LLD"},
+    "test-strategy": {"routeSuffix": "test-strategy", "documentType": "Test-Strategy"},
+    "test-spec": {"routeSuffix": "test-spec", "documentType": "Test-Spec"},
+    "runbook": {"routeSuffix": "runbook", "documentType": "Runbook"},
+    "guardrails": {"routeSuffix": "guardrails", "documentType": "Guardrails"},
 }
 
 

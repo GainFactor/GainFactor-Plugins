@@ -18,7 +18,7 @@
 ## 文档标识
 
 - 产品型正式产物以 `docs/gainfactor/{product-slug}/{artifact-key}.mdx` 为内容源；默认生成门户为工作区 `.gainfactor/portal`。
-- `artifact-key` 当前支持 `product-definition`、`user-persona`、`competitive-analysis`、`product-metrics`。标准产物的 group、collection 和 route 由发布器根据主体统一计算。
+- `artifact-key` 当前支持 `product-definition`、`brd`、`prd`、`user-journey`、`user-persona`、`competitive-analysis`、`product-metrics`、`domain-model`、`api-contract`、`hld`、`lld`、`test-strategy`、`test-spec`、`runbook`、`guardrails`。标准产物的 group、collection 和 route 由发布器根据主体统一计算。
 - `slug`：门户内稳定且唯一的文档标识，只允许小写字母、数字和连字符。
 - `type`：用户可读的文档类型，例如 `Product Definition`、`User Persona`、`Competitive Analysis`、`BRD`、`PRD`、`HLD`、`LLD`、`Test Strategy` 或 `Runbook`。
 - `collection`：面包屑中展示的集合名称，例如“产品文档”或“研发设计”。

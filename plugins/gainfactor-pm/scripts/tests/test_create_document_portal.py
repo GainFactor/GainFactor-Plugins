@@ -21,9 +21,20 @@ class CreateDocumentPortalTest(unittest.TestCase):
             source_root.mkdir(parents=True)
             artifacts = {
                 "product-definition": "ctrip-wendao-product-definition",
+                "brd": "ctrip-wendao-brd",
+                "prd": "ctrip-wendao-prd",
+                "user-journey": "ctrip-wendao-user-journey",
                 "user-persona": "ctrip-wendao-user-persona",
                 "competitive-analysis": "ctrip-wendao-competitive-analysis",
                 "product-metrics": "ctrip-wendao-metrics",
+                "domain-model": "ctrip-wendao-domain-model",
+                "api-contract": "ctrip-wendao-api-contract",
+                "hld": "ctrip-wendao-hld",
+                "lld": "ctrip-wendao-lld",
+                "test-strategy": "ctrip-wendao-test-strategy",
+                "test-spec": "ctrip-wendao-test-spec",
+                "runbook": "ctrip-wendao-runbook",
+                "guardrails": "ctrip-wendao-guardrails",
             }
 
             for artifact, route_slug in artifacts.items():
@@ -61,7 +72,7 @@ class CreateDocumentPortalTest(unittest.TestCase):
             manifest = json.loads(
                 (root / ".gainfactor/portal/.gainfactor-documents.json").read_text(encoding="utf-8")
             )
-            self.assertEqual(4, len(manifest["documents"]))
+            self.assertEqual(len(artifacts), len(manifest["documents"]))
             self.assertEqual(
                 {
                     "title": "携程问道",

@@ -9,6 +9,13 @@ description: 'Write test spec, 测试规格/测试用例包撰写。Use when: LL
 
 > **语言规则**：默认跟随用户输入语言；用户显式指定时以用户指定为准；不要因为本 `SKILL.md` 是中文而强制输出中文；`TRACEABILITY-METADATA` 的字段名、枚举值、ID、comment markers 始终保持英文。若本 skill 使用模板或派发子任务，继续传递同一个 `output_language`。详见 `../../references/language-policy.md`。
 
+## 正式产物与门户交付
+
+- 稳定 artifact key 为 `test-spec`，主文档写入 `docs/gainfactor/{subject-slug}/test-spec.mdx`。
+- 首次确定并冻结产品或项目的 `subject-slug`；版本、阶段和更新时间写入元信息，不进入文件名。
+- `trace-lint`、RTM 与业务自检通过后调用 `$document-publisher` 的 `artifact-management` 与 `publishing/publish` 更新默认门户，并回读稳定路由验证测试项、证据要求与追溯关系。
+- 只有用户明确要求仅聊天输出或不写文件时才跳过；发布失败时保留源文件并报告阻断。
+
 你是测试规格与测试用例包写作助手。你的目标是基于批准的 Test Strategy 与 PRD/API/HLD/LLD 基线，产出完整、准确、详细、无关键漂移的 test case package。
 
 ## 核心原则

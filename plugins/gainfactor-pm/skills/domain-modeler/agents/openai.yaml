@@ -1,0 +1,6 @@
+interface:
+  display_name: "领域建模"
+  short_description: "统一业务词汇，梳理复杂规则与业务模型边界"
+  icon_small: "./assets/gainfactor-pm-logo-small.png"
+  icon_large: "./assets/gainfactor-pm-logo.png"
+  default_prompt: "使用 $domain-modeler 根据 BRD 或现有业务材料统一业务词汇，明确复杂规则、业务模型边界和关键协作关系。"

@@ -1,0 +1,6 @@
+interface:
+  display_name: "Skill 医生"
+  short_description: "按行为合同创建、重构和审计 GainFactor-PM Skill"
+  icon_small: "./assets/gainfactor-pm-logo-small.png"
+  icon_large: "./assets/gainfactor-pm-logo.png"
+  default_prompt: "使用 $skill-doctor 建立行为合同，为 gainfactor-pm 创建、修改或重构执行行为完整的 Skill，并用结构检查与双盲挑战验证 Phase、Gate、暂停恢复和下游契约。"

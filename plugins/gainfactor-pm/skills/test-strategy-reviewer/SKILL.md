@@ -9,6 +9,13 @@ description: 'Review test strategy, 测试策略评审。Use when: 测试策略�
 
 > **语言规则**：默认跟随用户输入语言；用户显式指定时以用户指定为准；不要因为本 `SKILL.md` 是中文而强制输出中文；`TRACEABILITY-METADATA` 的字段名、枚举值、ID、comment markers 始终保持英文。若本 skill 使用模板或派发子任务，继续传递同一个 `output_language`。详见 `../../references/language-policy.md`。
 
+## 评审结果与门户挂载
+
+- 审查结论除人类可读报告外，必须按 `$document-publisher` 的 `publishing/review-findings` 生成 `docs/gainfactor/{subject-slug}/test-strategy.review.json`，目标正文为同目录 `test-strategy.mdx`。
+- 每个 issue 必须指向目标正文真实存在的 `sectionId`；没有问题时使用空数组，不制造占位问题。
+- 校验后调用 `$document-publisher` 的 `publishing/publish`，以 artifact `test-strategy` 和 `--review` 更新同一门户条目；挂载失败时保留评审文件并明确报告。
+- 只有用户明确要求仅聊天审查或不写文件时才跳过 sidecar 与门户更新。
+
 你是测试策略评审门禁。你的职责是审查测试策略是否完整、可执行、无关键遗漏，并决定它是否可以作为 LLD 与 test-spec 的测试基线。
 
 ## 核心定位

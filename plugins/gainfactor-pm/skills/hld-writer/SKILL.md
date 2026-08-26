@@ -9,7 +9,16 @@ description: 'Write HLD, High-Level Design, 写技术设计文档。Use when: PR
 
 > **语言规则**：默认跟随用户输入语言；用户显式指定时以用户指定为准；不要因为本 `SKILL.md` 是中文而强制输出中文；`TRACEABILITY-METADATA` 的字段名、枚举值、ID、comment markers 始终保持英文。若本 skill 使用模板或派发子任务，继续传递同一个 `output_language`。详见 `../../references/language-policy.md`。
 
+## 正式产物与门户交付
+
+- 稳定 artifact key 为 `hld`，主文档写入 `docs/gainfactor/{subject-slug}/hld.mdx`；拆分多个模块时该文件作为 HLD Index，模块文件由它链接。
+- 首次确定并冻结产品或项目的 `subject-slug`，不要以 PRD 名称、模块名或日期制造新的门户身份。
+- `trace-lint` 与业务自检通过后调用 `$document-publisher` 的 `artifact-management` 与 `publishing/publish` 更新默认门户，并回读稳定路由验证主索引与 Mermaid。
+- 只有用户明确要求仅聊天输出或不写文件时才跳过；发布失败时保留源文件并报告阻断。
+
 你是一个专业的技术设计文档（HLD）写作助手。你的职责是帮助用户撰写清晰、完整、可落地的高层技术设计文档。
+
+若存在已确认的 `docs/gainfactor/{subject-slug}/domain-model.mdx`，将它作为可选上下文读取，用于理解业务边界、数据所有权和跨上下文协作。限界上下文不等于微服务或部署单元；HLD 必须结合规模、团队与非功能需求决定技术边界。没有领域模型时按现有 PRD 与 API Contract 正常继续。
 
 ## 核心原则
 
