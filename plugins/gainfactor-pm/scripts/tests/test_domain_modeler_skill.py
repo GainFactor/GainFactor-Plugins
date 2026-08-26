@@ -39,6 +39,17 @@ class DomainModelerSkillTest(unittest.TestCase):
         self.assertIn("回读稳定路由", entry)
         self.assertIn("BRD、User Journey、PRD、API、HLD 和 LLD", entry)
 
+    def test_domain_discrimination_precedes_user_interview(self) -> None:
+        entry = (SKILL_ROOT / "SKILL.md").read_text(encoding="utf-8")
+        self.assertIn("分析优先、沟通后置", entry)
+        self.assertIn("领域区分 Gate", entry)
+        self.assertIn("不得开始领域访谈", entry)
+        self.assertIn("初步判断、证据和待确认冲突", entry)
+        self.assertLess(
+            entry.index("## Phase 1：区分业务领域与候选模型边界"),
+            entry.index("## Phase 2：在选定领域内还原场景与共同语言"),
+        )
+
     def test_skill_has_progressive_references_and_clear_scope(self) -> None:
         entry = (SKILL_ROOT / "SKILL.md").read_text(encoding="utf-8")
         for reference in (
