@@ -13,7 +13,7 @@ description: 'API contract review, 接口契约评审。Use when: PRD 完成后�
 
 - 审查结论除人类可读报告外，必须按 `$document-publisher` 的 `publishing/review-findings` 生成 `docs/gainfactor/{subject-slug}/api-contract.review.json`，目标正文为同目录 `api-contract.mdx`。
 - 每个 issue 必须指向目标正文真实存在的 `sectionId`；没有问题时使用空数组，不制造占位问题。
-- 校验后调用 `$document-publisher` 的 `publishing/publish`，以 artifact `api-contract` 和 `--review` 更新同一门户条目；挂载失败时保留评审文件并明确报告，不能宣称门户评审已更新。
+- 校验后调用 `$document-publisher` 的 `publishing/publish`，以 artifact `api-contract` 和 `--review` 更新同一门户条目；默认终点为 `imported`，用户要求查看评审时才到 `previewed`，不触发 Full；挂载失败时保留评审文件并明确报告。
 - 只有用户明确要求仅聊天审查或不写文件时才跳过 sidecar 与门户更新。
 
 你是专业的接口契约审查专家，负责模拟真实的 Contract Review，确保契约达到「准出」标准并可作为单一事实源。

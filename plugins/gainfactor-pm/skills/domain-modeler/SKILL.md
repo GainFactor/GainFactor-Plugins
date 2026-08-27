@@ -269,7 +269,7 @@ description: '领域驱动设计与领域建模。Use when: 需要统一团队�
 
 1. 检查术语一致、边界关系、规则所有者、事件命名、10 项评分、来源和未决项。
 2. 检查 Mermaid 能渲染、内部锚点有效、无未注册组件；图不能代替决策说明。
-3. 调用 `$document-publisher` 的 `artifact-management` 与 `publishing/publish` 创建或更新默认门户。
+3. 调用 `$document-publisher` 的 `artifact-management` 与 `publishing/publish` 创建或更新默认门户，默认终点为 `imported`；用户要求打开查看时再到 `previewed`，不触发 Full。
 4. 回读稳定路由，确认标题、核心术语、边界图、规则、事件、评分和未决项已落盘；发布失败时保留源文档并报告阻断。
 5. 向 BRD、User Journey、PRD、API、HLD 和 LLD 交接稳定语言、边界、规则、事件和未决项；下游不得静默改写。
 

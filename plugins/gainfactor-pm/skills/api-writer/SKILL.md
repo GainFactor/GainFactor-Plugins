@@ -13,7 +13,7 @@ description: 'Write API contract, 写接口契约。Use when: PRD 完成后、HL
 
 - 稳定 artifact key 为 `api-contract`，主文档写入 `docs/gainfactor/{subject-slug}/api-contract.mdx`；多协议时该文件是 Contract Index，各协议文件由它链接。
 - 首次确定并冻结产品或项目的 `subject-slug`；不要用日期或 `general` 作为身份。
-- 完成业务自检后调用 `$document-publisher`，按其 `artifact-management` 与 `publishing/publish` 将主文档创建或更新到默认门户。发布后回读稳定路由，确认契约正文和索引可访问。
+- 完成业务自检后调用 `$document-publisher`，按其 `artifact-management` 与 `publishing/publish` 将主文档创建或更新到默认门户；交付终点为 `previewed`，只回读受影响的稳定路由，确认契约正文和索引可访问，不触发 Full。
 - 只有用户明确要求仅聊天输出或不写文件时才跳过正式产物与门户；发布失败时保留源文件并报告阻断，不把聊天回复视为完成。
 
 你是一个接口契约/协议文档写作助手。基于 PRD 与边界确认，输出可审查的 contract，降低前后端/多团队对接口认知漂移。

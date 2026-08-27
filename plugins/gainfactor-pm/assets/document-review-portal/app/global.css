@@ -365,14 +365,15 @@ body {
 
 .mermaid-frame { margin-block: 1.75rem; overflow: hidden; border: 1px solid var(--doc-border-subtle); border-radius: var(--doc-radius-md); background: var(--color-fd-card); box-shadow: none; }
 .mermaid-frame figcaption { display: flex; align-items: center; justify-content: space-between; padding: 0.65rem 0.8rem; border-bottom: 1px solid var(--color-fd-border); color: var(--color-fd-foreground); font-size: 0.875rem; font-weight: 650; }
-.mermaid-controls { display: flex; gap: 0.35rem; }
-.mermaid-scale { display: inline-flex; min-width: 2.75rem; align-items: center; justify-content: center; color: var(--color-fd-muted-foreground); font-size: 0.75rem; font-variant-numeric: tabular-nums; }
-.mermaid-controls button { display: grid; width: 1.75rem; height: 1.75rem; place-items: center; border: 1px solid var(--doc-border-subtle); border-radius: var(--doc-radius-control); color: var(--color-fd-muted-foreground); }
-.mermaid-controls button:hover, .mermaid-controls button:focus-visible { border-color: var(--color-fd-primary); color: var(--color-fd-primary); }
-.mermaid-controls svg { width: 1rem; height: 1rem; }
+.gf-panzoom-controls { display: flex; align-items: center; gap: 0.35rem; }
+.gf-panzoom-controls output { display: inline-flex; min-width: 2.75rem; align-items: center; justify-content: center; color: var(--color-fd-muted-foreground); font-size: 0.75rem; font-variant-numeric: tabular-nums; }
+.gf-panzoom-controls button { display: grid; width: 1.75rem; height: 1.75rem; place-items: center; border: 1px solid var(--doc-border-subtle); border-radius: var(--doc-radius-control); color: var(--color-fd-muted-foreground); }
+.gf-panzoom-controls button:hover, .gf-panzoom-controls button:focus-visible { border-color: var(--color-fd-primary); color: var(--color-fd-primary); }
+.gf-panzoom-controls button:disabled { cursor: wait; opacity: 0.45; }
+.gf-panzoom-controls svg { width: 1rem; height: 1rem; }
 .mermaid-canvas { display: grid; height: min(40vh, 20rem); min-height: 13rem; place-items: center; overflow: hidden; padding: 1rem; background: var(--color-fd-background); color: var(--color-fd-muted-foreground); text-align: center; cursor: grab; touch-action: none; }
 .mermaid-canvas[data-dragging='true'] { cursor: grabbing; user-select: none; }
-.mermaid-svg { width: max-content; min-width: 100%; transform-origin: top left; transition: transform 80ms ease-out; will-change: transform; }
+.mermaid-svg { width: max-content; min-width: 100%; }
 .mermaid-svg svg { width: auto; max-width: none; min-width: 100%; height: auto; }
 .mermaid-fullscreen-root:fullscreen { width: 100vw; height: 100vh; background: var(--color-fd-background); }
 .mermaid-fullscreen-root:fullscreen::backdrop { background: var(--color-fd-background); }
@@ -444,7 +445,8 @@ body {
 .node-graph figcaption li { display: flex; flex-wrap: wrap; align-items: center; gap: 0.5rem; font-size: 0.82rem; }
 .node-graph figcaption em { color: var(--color-fd-muted-foreground); font-style: normal; }
 .antv-infographic { display: grid; gap: var(--doc-space-field); margin: var(--doc-space-subsection) 0; overflow: hidden; border: 1px solid var(--doc-border-subtle); border-radius: var(--doc-radius-lg); padding: var(--doc-card-padding); background: var(--color-fd-card); }
-.antv-infographic-canvas { display: grid; min-height: 12rem; place-items: center; overflow-x: auto; }
+.antv-infographic-viewport { min-width: 0; overflow: hidden; overscroll-behavior: contain; }
+.antv-infographic-canvas { display: grid; width: 100%; min-height: 12rem; place-items: center; }
 .antv-infographic-canvas > svg { width: 100%; max-width: 64rem; height: auto; }
 .antv-infographic figcaption { color: var(--color-fd-muted-foreground); font-size: 0.78rem; text-align: center; }
 .antv-infographic-error { display: grid; gap: 0.25rem; border-radius: var(--doc-radius-md); padding: 0.75rem; background: color-mix(in srgb, var(--color-status-danger) 10%, var(--color-fd-card)); color: var(--color-fd-foreground); font-size: var(--doc-text-small); }
@@ -453,6 +455,11 @@ body {
 .dark .antv-infographic foreignObject[data-element-type="item-label"] span { color: var(--color-fd-foreground) !important; }
 .dark .antv-infographic-canvas[data-template-family="chart"] text[fill="#262626"] { fill: var(--color-fd-foreground); }
 .dark .antv-infographic-canvas[data-template-family="chart"] path[stroke="#262626"] { stroke: var(--color-fd-muted-foreground); }
+.antv-infographic-fullscreen-root:fullscreen { width: 100vw; height: 100vh; background: var(--color-fd-background); }
+.antv-infographic-fullscreen-root:fullscreen::backdrop { background: var(--color-fd-background); }
+.antv-infographic-fullscreen-root:fullscreen .antv-infographic { display: flex; width: 100%; height: 100%; margin: 0; flex-direction: column; border: 0; border-radius: 0; background: var(--color-fd-background); }
+.antv-infographic-fullscreen-root:fullscreen .gf-figure-stage { display: flex; min-height: 0; flex: 1; }
+.antv-infographic-fullscreen-root:fullscreen .antv-infographic-viewport { width: 100%; min-height: 0; flex: 1; }
 
 .prd-document { counter-reset: screenshot; }
 .gf-screenshot { display: grid; min-width: 0; max-width: 100%; align-content: start; gap: 0; margin: var(--doc-space-subsection) 0; counter-increment: screenshot; overflow: hidden; border: 1px solid var(--doc-border-subtle); border-radius: var(--doc-radius-panel); background: var(--color-fd-card); box-shadow: var(--doc-shadow-media); }
@@ -478,12 +485,23 @@ body {
 .gf-screenshot-gallery[data-layout="rail"] .gf-screenshot-trigger { height: min(70vh, 40rem); }
 .gf-screenshot-gallery[data-layout="rail"] [data-device='mobile'] .gf-screenshot-trigger { place-items: start center; overflow-y: auto; }
 .gf-screenshot-gallery[data-layout="rail"] [data-device='mobile'] .gf-screenshot-trigger img { width: min(100%, 23.75rem); max-height: none !important; }
-.gf-screenshot-lightbox { position: fixed; z-index: 100; inset: 0; display: grid; place-items: center; overflow: auto; padding: clamp(1rem, 4vw, 3rem); background: var(--ref-overlay-strong); }
-.gf-screenshot-lightbox > button { position: absolute; top: 1rem; right: 1rem; display: grid; width: 2.5rem; height: 2.5rem; place-items: center; border: 1px solid var(--ref-overlay-border); border-radius: var(--doc-radius-pill); background: var(--ref-overlay-control); color: var(--ref-accent-contrast); }
+.gf-screenshot-lightbox { position: fixed; z-index: 1000; inset: 0; display: grid; place-items: center; overflow: auto; padding: clamp(1rem, 4vw, 3rem); background: var(--ref-overlay-strong); }
+.gf-screenshot-lightbox > button { position: absolute; z-index: 2; top: 1rem; right: 1rem; display: grid; width: 2.5rem; height: 2.5rem; place-items: center; border: 1px solid var(--ref-overlay-border); border-radius: var(--doc-radius-pill); background: var(--ref-overlay-control); color: var(--ref-accent-contrast); }
 .gf-screenshot-lightbox > button svg { width: 1.1rem; }
-.gf-screenshot-lightbox > img { display: block; max-width: 100%; max-height: calc(100dvh - 4rem); width: auto; height: auto; object-fit: contain; }
+.gf-screenshot-lightbox-controls { position: absolute; z-index: 2; top: 1rem; left: 50%; display: flex; align-items: center; gap: 0.35rem; border: 1px solid var(--ref-overlay-border); border-radius: var(--doc-radius-pill); padding: 0.3rem; background: var(--ref-overlay-control); color: var(--ref-accent-contrast); transform: translateX(-50%); }
+.gf-screenshot-lightbox-controls button { display: grid; width: 1.9rem; height: 1.9rem; place-items: center; border-radius: var(--doc-radius-pill); }
+.gf-screenshot-lightbox-controls button:hover, .gf-screenshot-lightbox-controls button:focus-visible { background: color-mix(in srgb, var(--ref-accent-contrast) 14%, transparent); }
+.gf-screenshot-lightbox-controls svg { width: 1rem; height: 1rem; }
+.gf-screenshot-lightbox-controls output { min-width: 3rem; text-align: center; font-size: var(--doc-text-micro); font-variant-numeric: tabular-nums; }
+.gf-screenshot-lightbox-controls .gf-panzoom-controls button { border-color: var(--ref-overlay-border); color: var(--ref-accent-contrast); }
+.gf-screenshot-lightbox-controls .gf-panzoom-controls button:hover, .gf-screenshot-lightbox-controls .gf-panzoom-controls button:focus-visible { border-color: var(--ref-accent-contrast); background: color-mix(in srgb, var(--ref-accent-contrast) 14%, transparent); color: var(--ref-accent-contrast); }
+.gf-screenshot-lightbox-controls .gf-panzoom-controls output { color: var(--ref-accent-contrast); }
+.gf-screenshot-lightbox-viewport { display: grid; width: 100%; height: 100%; place-items: center; overflow: hidden; cursor: zoom-in; touch-action: none; }
+.gf-screenshot-lightbox-viewport[data-dragging='true'] { cursor: grabbing; user-select: none; }
+.gf-screenshot-lightbox-viewport > img { display: block; max-width: 100%; max-height: calc(100dvh - 4rem); width: auto; height: auto; outline: 1px solid var(--ref-overlay-border); object-fit: contain; transform-origin: center; transition: transform 80ms ease-out; will-change: transform; }
 .gf-screenshot-lightbox[data-device='mobile'] { place-items: start center; }
-.gf-screenshot-lightbox[data-device='mobile'] > img { width: min(100%, 23.75rem); max-height: none; }
+.gf-screenshot-lightbox[data-device='mobile'] .gf-screenshot-lightbox-viewport { overflow: auto; }
+.gf-screenshot-lightbox[data-device='mobile'] .gf-screenshot-lightbox-viewport > img { width: min(100%, 23.75rem); max-height: none; }
 .gf-evidence-step { display: grid; grid-template-columns: minmax(0, 1fr) minmax(17rem, 38%); align-items: start; gap: var(--doc-space-component); margin: var(--doc-space-subsection) 0; border-top: 1px solid var(--doc-border-subtle); padding-top: var(--doc-space-component); }
 .gf-evidence-step-copy, .gf-evidence-step-evidence { min-width: 0; }
 .gf-evidence-step-number { color: var(--gf-brand-text); font-size: var(--doc-text-micro); font-weight: 750; letter-spacing: 0.04em; }

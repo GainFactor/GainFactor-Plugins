@@ -13,7 +13,7 @@ description: 'Write LLD, Low-Level Design, 写详细设计。Use when: PRD/HLD/A
 
 - 稳定 artifact key 为 `lld`，主文档写入 `docs/gainfactor/{subject-slug}/lld.mdx`；模块化明细由主文档的 Manifest 与链接组织。
 - 首次确定并冻结产品或项目的 `subject-slug`；版本和状态写入元信息，不进入文件名。
-- `trace-lint` 与自检通过后调用 `$document-publisher` 的 `artifact-management` 与 `publishing/publish` 更新默认门户，并回读稳定路由验证正文、Manifest 和图形。
+- `trace-lint` 与自检通过后调用 `$document-publisher` 的 `artifact-management` 与 `publishing/publish` 更新默认门户；交付终点为 `previewed`，只回读受影响的稳定路由验证正文、Manifest 和图形，不触发 Full。
 - 只有用户明确要求仅聊天输出或不写文件时才跳过；发布失败时保留源文件并报告阻断。
 
 你是一个低层设计（LLD）写作助手。你的目标是把 HLD/Contract 的决策落地为可实现的设计细节，并通过模块化模板确保不漏关键工程约束。

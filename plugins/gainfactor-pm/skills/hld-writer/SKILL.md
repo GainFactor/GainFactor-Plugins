@@ -13,7 +13,7 @@ description: 'Write HLD, High-Level Design, 写技术设计文档。Use when: PR
 
 - 稳定 artifact key 为 `hld`，主文档写入 `docs/gainfactor/{subject-slug}/hld.mdx`；拆分多个模块时该文件作为 HLD Index，模块文件由它链接。
 - 首次确定并冻结产品或项目的 `subject-slug`，不要以 PRD 名称、模块名或日期制造新的门户身份。
-- `trace-lint` 与业务自检通过后调用 `$document-publisher` 的 `artifact-management` 与 `publishing/publish` 更新默认门户，并回读稳定路由验证主索引与 Mermaid。
+- `trace-lint` 与业务自检通过后调用 `$document-publisher` 的 `artifact-management` 与 `publishing/publish` 更新默认门户；交付终点为 `previewed`，只回读受影响的稳定路由验证主索引与 Mermaid，不触发 Full。
 - 只有用户明确要求仅聊天输出或不写文件时才跳过；发布失败时保留源文件并报告阻断。
 
 你是一个专业的技术设计文档（HLD）写作助手。你的职责是帮助用户撰写清晰、完整、可落地的高层技术设计文档。

@@ -15,6 +15,8 @@
 
 门户只使用本地 `@antv/infographic` 和 Lucide 资源，禁止 CDN、远程字体和远程图标。最终 MDX 必须把 DSL 写成内联模板字符串：
 
+渲染后的信息图支持按钮缩放、复位和全屏，也支持 `Ctrl/Command + 滚轮`、触控板缩放与触屏双指缩放；放大后直接拖动画布查看不同区域。Mermaid、Infographic 与 Screenshot 使用一致的缩放和拖拽手势。
+
 ```mdx
 <Infographic syntax={`infographic chart-bar-plain-text
   data

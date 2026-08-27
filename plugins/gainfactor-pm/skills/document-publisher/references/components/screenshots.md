@@ -34,7 +34,7 @@ type EvidenceStepProps = {
   evidenceId="E-S01" device="desktop" step={2} />
 ```
 
-单图默认 `maxHeight="70vh"`、`object-fit: contain`，点击可在灯箱查看原图。`title`、`caption`、图号、步骤和 `evidenceId` 进入同一说明区；正式证据必须填写 `caption`。手机长图设置 `device="mobile"`，宽度限制在 280–380px 范围内。
+单图默认 `maxHeight="70vh"`、`object-fit: contain`，点击可在灯箱查看原图。灯箱支持按钮缩放、`Ctrl/Command + 滚轮` 或触控板缩放手势，放大后可以拖动画布；Esc 关闭并恢复原焦点。`title`、`caption`、图号、步骤和 `evidenceId` 进入同一说明区；正式证据必须填写 `caption`。手机长图设置 `device="mobile"`，宽度限制在 280–380px 范围内。
 
 多图使用 1–3 列响应式画廊：
 

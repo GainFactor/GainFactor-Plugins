@@ -7,6 +7,16 @@
 1. 可独立阅读、无需发布器二次理解的最终源文件；纯标准 Markdown 可以使用 `.md`，使用任何注册组件时必须使用 `.mdx`。
 2. 仅在首屏摘要确实降低阅读成本时生成同名 `.portal.json`。
 
+上游还必须声明本轮交付终点：
+
+- 只形成正式文档：`source-written`
+- 只校验内容契约：`validated`
+- 接入或更新门户：`imported`
+- 打开给用户查看：`previewed`
+- 正式发布：`released`
+
+“完成正式产物”只表示 `source-written`，不能隐式要求门户构建或 Full。一个工作流交付多份文档时，应先完成全部源文件，再批量导入并统一验证一次。
+
 新建或定位正式产物时先遵守 [`artifact-management`](artifact-management.md)。上游只声明 artifact key 与业务阻断条件，不自行拼接 portal target、group、route 或 collection。
 
 业务 Skill 自己负责业务结论、章节顺序和领域质量门禁；`document-publisher` 提供已注册表达能力、格式校验和发布动作。发布器不得从普通 Markdown 猜测组件、图形或首屏。

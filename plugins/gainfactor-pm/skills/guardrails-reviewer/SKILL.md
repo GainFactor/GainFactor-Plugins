@@ -13,7 +13,7 @@ description: 'Review Project Guardrails, 工程规范评审。Use when: Guardrai
 
 - 审查结论除人类可读报告外，必须按 `$document-publisher` 的 `publishing/review-findings` 生成 `docs/gainfactor/{subject-slug}/guardrails.review.json`，目标正文为同目录 `guardrails.mdx`。
 - 每个 issue 必须指向目标正文真实存在的 `sectionId`；没有问题时使用空数组，不制造占位问题。
-- 校验后调用 `$document-publisher` 的 `publishing/publish`，以 artifact `guardrails` 和 `--review` 更新同一门户条目；`no_change` 审查仍挂载到当前基线，不另建评审页面。
+- 校验后调用 `$document-publisher` 的 `publishing/publish`，以 artifact `guardrails` 和 `--review` 更新同一门户条目；默认终点为 `imported`，用户要求查看评审时才到 `previewed`，不触发 Full；`no_change` 审查仍挂载到当前基线。
 - 只有用户明确要求仅聊天审查或不写文件时才跳过 sidecar 与门户更新。
 
 你是项目级 Guardrails 准出 reviewer。你的职责不是重写规则，而是判断这份 Guardrails 是否已经达到“可作为仓库治理基线被下游消费”的标准。

@@ -62,7 +62,7 @@ description: Define or review a PRODUCT_METRICS system from an existing product 
 - 所有候选先完成最小测量契约，再比较价值代表性、战略或任务一致性、反馈速度、可影响性、可统计性、可衡量性和抗博弈性。
 - 推荐一个候选，并用 `✅`、`⚠️`、`❌` 展示会改变结论的门禁结果。硬门禁不通过则修正候选，最多再比较 2 个替代候选；仍无法通过时标为 `待定义`。
 
-用户确认的是完整业务定义和最小测量契约，不是指标名称。确认后自动调用 `$document-publisher`，第一次创建或更新同一 `PRODUCT_METRICS` 门户文档并启动预览。
+用户确认的是完整业务定义和最小测量契约，不是指标名称。确认后自动调用 `$document-publisher`，以 `previewed` 为终点第一次创建或更新同一 `PRODUCT_METRICS` 门户文档，不执行正式 release 或 Full。
 
 ### 4. 拆解驱动与过程指标
 
@@ -70,7 +70,7 @@ description: Define or review a PRODUCT_METRICS system from an existing product 
 
 选择默认 3 个真正推动主要指标、适合当前决策周期且团队可影响的核心过程指标；局部任务只保留会改变决策的必要指标。再指出 2 个本产品最容易误用的虚荣指标及其正确诊断用途。所有最终指标补全完整测量契约并通过门禁。
 
-用户确认后自动调用 `$document-publisher`，第二次更新同一文档并启动预览。
+用户确认后自动调用 `$document-publisher`，以 `previewed` 为终点第二次更新同一文档，不执行正式 release 或 Full。
 
 ### 5. 定义底线与行动契约
 
@@ -78,7 +78,7 @@ description: Define or review a PRODUCT_METRICS system from an existing product 
 
 涉及 AI 时，按增效、赋能或决策价值模式识别不可接受失败，不机械套用幻觉率、准确率或生成成功率。阈值必须有法规／合同、产品承诺、历史分布或实验依据；没有依据时标为 `待验证`，不得编造红线。
 
-用户确认后自动调用 `$document-publisher`，第三次更新同一文档、启动预览并完成交付。
+用户确认后自动调用 `$document-publisher`，以 `previewed` 为终点第三次更新同一文档并完成交付，不执行正式 release 或 Full。
 
 ## 状态纪律
 

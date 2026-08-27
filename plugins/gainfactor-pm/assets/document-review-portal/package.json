@@ -15,6 +15,7 @@
   "dependencies": {
     "@antv/infographic": "0.2.20",
     "@mermaid-js/layout-elk": "^0.2.2",
+    "@panzoom/panzoom": "4.6.2",
     "@radix-ui/themes": "3.3.0",
     "cnfast": "^0.1.0",
     "fumadocs-core": "16.14.4",

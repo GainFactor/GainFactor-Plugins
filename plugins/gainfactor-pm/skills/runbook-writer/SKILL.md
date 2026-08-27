@@ -13,7 +13,7 @@ description: 'Write Runbook, 撰写运维手册。Use when: LLD 完成后需要�
 
 - 稳定 artifact key 为 `runbook`，主文档写入 `docs/gainfactor/{subject-slug}/runbook.mdx`。
 - 首次确定并冻结产品、系统或项目的 `subject-slug`；环境、版本和更新时间写入文档元信息，不进入文件名。
-- Spec 与 Quality Review 通过后调用 `$document-publisher` 的 `artifact-management` 与 `publishing/publish` 更新默认门户，并回读稳定路由验证操作、验证与回滚步骤。
+- Spec 与 Quality Review 通过后调用 `$document-publisher` 的 `artifact-management` 与 `publishing/publish` 更新默认门户；交付终点为 `previewed`，只回读受影响的稳定路由验证操作、验证与回滚步骤，不触发 Full。
 - 只有用户明确要求仅聊天输出或不写文件时才跳过；发布失败时保留源文件并报告阻断。
 
 你是运维手册编写的协调者。你的职责是收集上下文、派发 subagent 独立写作、组织审查流程，确保 Runbook 质量达到生产就绪标准。

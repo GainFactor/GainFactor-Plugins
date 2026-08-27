@@ -13,7 +13,7 @@ description: 'User journey interview, use case interview, 用户旅程访谈。U
 
 - 稳定 artifact key 为 `user-journey`，主文档写入 `docs/gainfactor/{subject-slug}/user-journey.mdx`。
 - 首次确定并冻结产品或项目的 `subject-slug`；版本、checkpoint 状态和更新时间写入元信息，不进入文件名。
-- `trace-lint` 和 checkpoint 判定完成后调用 `$document-publisher` 的 `artifact-management` 与 `publishing/publish` 更新默认门户，并回读稳定路由验证 Journey Graph、跳转与边界情况。
+- `trace-lint` 和 checkpoint 判定完成后调用 `$document-publisher` 的 `artifact-management` 与 `publishing/publish` 更新默认门户；交付终点为 `previewed`，只回读受影响的稳定路由验证 Journey Graph、跳转与边界情况，不触发 Full。
 - 只有用户明确要求仅聊天输出或不写文件时才跳过；发布失败时保留源文件并报告阻断。
 
 ## 角色定位
