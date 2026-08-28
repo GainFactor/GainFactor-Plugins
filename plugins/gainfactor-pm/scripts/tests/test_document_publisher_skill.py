@@ -62,6 +62,15 @@ class DocumentPublisherSkillTest(unittest.TestCase):
         self.assertTrue(routes)
         self.assertTrue(all((SKILL_ROOT / route).is_file() for route in routes))
 
+    def test_entry_distinguishes_sync_preview_and_release_end_states(self) -> None:
+        entry = (SKILL_ROOT / "SKILL.md").read_text(encoding="utf-8")
+        for state in ("source-written", "validated", "imported", "previewed", "released"):
+            with self.subTest(state=state):
+                self.assertIn(state, entry)
+        self.assertIn("调用本 Skill 不等于正式发布", entry)
+        self.assertIn("先完成并导入全部变更，再统一构建和验证一次", entry)
+        self.assertIn("从第一个未满足项继续", entry)
+
     def test_all_local_markdown_links_resolve(self) -> None:
         files = [SKILL_ROOT / "SKILL.md", *sorted((SKILL_ROOT / "references").rglob("*.md"))]
         for source in files:
@@ -102,7 +111,44 @@ class DocumentPublisherSkillTest(unittest.TestCase):
         self.assertEqual({"wide", "desktop", "tablet", "mobile", "compact"}, viewports)
         self.assertRegex(gate, r"\[['\"]light['\"],\s*['\"]dark['\"]\]")
         self.assertIn("PORTAL_GATE_QUICK", gate)
+        self.assertIn("PORTAL_GATE_ROUTES", gate)
         self.assertIn("[allViewports[1]]", gate)
+
+    def test_quick_gate_can_target_affected_routes(self) -> None:
+        gate = (PORTAL_ROOT / "scripts/visual-release-gate.mjs").read_text(encoding="utf-8")
+        self.assertIn("process.env.PORTAL_GATE_ROUTES", gate)
+        self.assertIn("requestedRoutes.length ? requestedRoutes", gate)
+        publish = (SKILL_ROOT / "references/publishing/publish.md").read_text(encoding="utf-8")
+        preview = (SKILL_ROOT / "references/publishing/preview.md").read_text(encoding="utf-8")
+        self.assertIn("PORTAL_GATE_ROUTES=/docs/<affected-route-1>", publish)
+        self.assertIn("PORTAL_GATE_ROUTES=/docs/<affected-route-1>", preview)
+
+    def test_visual_gate_checks_every_interactive_media_instance(self) -> None:
+        gate = (PORTAL_ROOT / "scripts/visual-release-gate.mjs").read_text(encoding="utf-8")
+        for loop_variable in ("screenshotIndex", "infographicIndex", "mermaidIndex"):
+            with self.subTest(loop_variable=loop_variable):
+                self.assertIn(loop_variable, gate)
+
+    def test_review_only_update_defaults_to_imported(self) -> None:
+        review = (SKILL_ROOT / "references/publishing/review-findings.md").read_text(encoding="utf-8")
+        self.assertIn("默认终点为 `imported`", review)
+        self.assertNotIn("也必须重新执行该发布流程的构建与门禁", review)
+
+    def test_direct_upstream_publishers_declare_delivery_end_state(self) -> None:
+        upstream = {
+            "api-writer": "previewed",
+            "hld-writer": "previewed",
+            "lld-writer": "previewed",
+            "prd-writer": "previewed",
+            "api-reviewer": "imported",
+            "hld-reviewer": "imported",
+            "lld-reviewer": "imported",
+            "test-reviewer": "imported",
+        }
+        for skill, state in upstream.items():
+            with self.subTest(skill=skill, state=state):
+                text = (PLUGIN_ROOT / "skills" / skill / "SKILL.md").read_text(encoding="utf-8")
+                self.assertIn(f"`{state}`", text)
 
     def test_publishing_docs_define_staged_quick_and_full_gates(self) -> None:
         publish = (SKILL_ROOT / "references/publishing/publish.md").read_text(encoding="utf-8")

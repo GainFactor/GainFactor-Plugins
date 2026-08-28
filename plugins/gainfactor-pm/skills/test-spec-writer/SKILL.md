@@ -13,7 +13,7 @@ description: 'Write test spec, 测试规格/测试用例包撰写。Use when: LL
 
 - 稳定 artifact key 为 `test-spec`，主文档写入 `docs/gainfactor/{subject-slug}/test-spec.mdx`。
 - 首次确定并冻结产品或项目的 `subject-slug`；版本、阶段和更新时间写入元信息，不进入文件名。
-- `trace-lint`、RTM 与业务自检通过后调用 `$document-publisher` 的 `artifact-management` 与 `publishing/publish` 更新默认门户，并回读稳定路由验证测试项、证据要求与追溯关系。
+- `trace-lint`、RTM 与业务自检通过后调用 `$document-publisher` 的 `artifact-management` 与 `publishing/publish` 更新默认门户；交付终点为 `previewed`，只回读受影响的稳定路由验证测试项、证据要求与追溯关系，不触发 Full。
 - 只有用户明确要求仅聊天输出或不写文件时才跳过；发布失败时保留源文件并报告阻断。
 
 你是测试规格与测试用例包写作助手。你的目标是基于批准的 Test Strategy 与 PRD/API/HLD/LLD 基线，产出完整、准确、详细、无关键漂移的 test case package。

@@ -62,8 +62,13 @@ const allViewports = [
   { name: 'compact', width: 320, height: 720 },
 ];
 const viewports = process.env.PORTAL_GATE_QUICK === '1' ? [allViewports[1]] : allViewports;
+const requestedRoutes = (process.env.PORTAL_GATE_ROUTES ?? '')
+  .split(',')
+  .map((route) => route.trim())
+  .filter(Boolean)
+  .map((route) => route.startsWith('/') ? route : `/${route}`);
 const selectedRoutes = process.env.PORTAL_GATE_QUICK === '1'
-  ? ['/docs/portal-release-check-mdx', '/component-gallery', '/']
+  ? [...new Set(requestedRoutes.length ? requestedRoutes : ['/docs/portal-release-check-mdx', '/component-gallery', '/'])]
   : routes;
 const executableCandidates = [
   process.env.PLAYWRIGHT_CHROMIUM_EXECUTABLE,
@@ -113,15 +118,23 @@ try {
             const id = decodeURIComponent(link.getAttribute('href').slice(1));
             if (id && !document.getElementById(id)) errors.push(`无效内部引用：#${id}`);
           }
-          for (const container of document.querySelectorAll('.antv-infographic-canvas, .mermaid')) {
+          for (const container of document.querySelectorAll('.antv-infographic-canvas, .mermaid-svg')) {
             const surface = container.querySelector('svg, canvas');
             const bounds = surface?.getBoundingClientRect();
             const hasGraphics = surface instanceof HTMLCanvasElement
               ? surface.width > 0 && surface.height > 0
               : Boolean(surface?.querySelector('path, rect, circle, ellipse, line, polyline, polygon, text, image, use, foreignObject'));
-            if (!surface || !bounds || bounds.width <= 1 || bounds.height <= 1 || !hasGraphics) errors.push(`${container.classList.contains('mermaid') ? 'Mermaid' : 'Infographic'} 为空或尺寸无效`);
+            if (!surface || !bounds || bounds.width <= 1 || bounds.height <= 1 || !hasGraphics) errors.push(`${container.classList.contains('mermaid-svg') ? 'Mermaid' : 'Infographic'} 为空或尺寸无效`);
             const frame = container.closest('.gf-figure-stage');
             if (frame && (container.scrollWidth > frame.clientWidth + 2 || container.scrollHeight > frame.clientHeight + 2)) errors.push('图形组件被容器裁切');
+          }
+          for (const infographic of document.querySelectorAll('.antv-infographic')) {
+            if (!infographic.querySelector('[aria-label="缩小信息图"]')
+              || !infographic.querySelector('[aria-label="放大信息图"]')
+              || !infographic.querySelector('[aria-label="重置信息图缩放"]')
+              || !infographic.querySelector('[aria-label="全屏查看信息图"]')) {
+              errors.push('Infographic 缺少缩放、复位或全屏控制');
+            }
           }
           for (const list of document.querySelectorAll('.gf-field-list')) {
             const columns = getComputedStyle(list).gridTemplateColumns.split(' ').filter(Boolean).length;
@@ -193,14 +206,121 @@ try {
           }
           if (nodes.length) failures.push(`${prefix}: axe ${violation.impact} ${violation.id}（${nodes.length} 处：${nodes.slice(0, 3).flatMap((node) => node.target).join(', ')}）`);
         }
-        const trigger = page.locator('.gf-screenshot-trigger').first();
-        if (await trigger.count()) {
+        const screenshotTriggers = page.locator('.gf-screenshot-trigger');
+        for (let screenshotIndex = 0; screenshotIndex < await screenshotTriggers.count(); screenshotIndex += 1) {
+          const trigger = screenshotTriggers.nth(screenshotIndex);
           await trigger.focus();
           await page.keyboard.press('Enter');
           const dialog = page.locator('.gf-screenshot-lightbox[role="dialog"]');
           if (!(await dialog.isVisible())) failures.push(`${prefix}: Screenshot 灯箱无法通过键盘打开`);
+          else {
+            const overlay = await dialog.evaluate((element) => {
+              const bounds = element.getBoundingClientRect();
+              return {
+                parentIsBody: element.parentElement === document.body,
+                coversViewport: Math.abs(bounds.left) <= 1
+                  && Math.abs(bounds.top) <= 1
+                  && Math.abs(bounds.width - innerWidth) <= 1
+                  && Math.abs(bounds.height - innerHeight) <= 1,
+                bodyLocked: getComputedStyle(document.body).overflow === 'hidden',
+                closeFocused: document.activeElement?.getAttribute('aria-label') === '关闭原图',
+              };
+            });
+            if (!overlay.parentIsBody || !overlay.coversViewport) failures.push(`${prefix}: Screenshot 灯箱未覆盖完整视口`);
+            if (!overlay.bodyLocked) failures.push(`${prefix}: Screenshot 灯箱打开后页面仍可滚动`);
+            if (!overlay.closeFocused) failures.push(`${prefix}: Screenshot 灯箱未将焦点移至关闭按钮`);
+            const image = dialog.locator('.gf-screenshot-lightbox-viewport > img');
+            const imageViewport = dialog.locator('.gf-screenshot-lightbox-viewport');
+            if (!(await dialog.getByRole('button', { name: /^放大图片$/ }).count())
+              || !(await dialog.getByRole('button', { name: /^重置图片缩放$/ }).count())) {
+              failures.push(`${prefix}: Screenshot 灯箱缺少缩放控制`);
+            }
+            await imageViewport.dispatchEvent('wheel', { deltaY: -100, ctrlKey: true });
+            await page.waitForTimeout(250);
+            const imageWheelScale = await image.evaluate((element) => new DOMMatrix(getComputedStyle(element).transform).a);
+            if (imageWheelScale <= 1.001) failures.push(`${prefix}: Screenshot 滚轮缩放无效`);
+            const imageTransformBeforeDrag = await image.evaluate((element) => getComputedStyle(element).transform);
+            const imageBounds = await imageViewport.boundingBox();
+            if (imageBounds) {
+              const x = imageBounds.x + imageBounds.width / 2;
+              const y = imageBounds.y + imageBounds.height / 2;
+              await page.mouse.move(x, y);
+              await page.mouse.down();
+              await page.mouse.move(x + 60, y + 30, { steps: 5 });
+              await page.mouse.up();
+              const imageTransformAfterDrag = await image.evaluate((element) => getComputedStyle(element).transform);
+              if (imageTransformAfterDrag === imageTransformBeforeDrag) failures.push(`${prefix}: Screenshot 放大后无法拖拽`);
+            }
+            await dialog.getByRole('button', { name: /^重置图片缩放$/ }).click();
+            await page.waitForTimeout(250);
+            if (Math.abs(Number(await image.getAttribute('data-scale')) - 1) > 0.01) failures.push(`${prefix}: Screenshot 复位控制无效`);
+          }
           await page.keyboard.press('Escape');
           if (await dialog.isVisible()) failures.push(`${prefix}: Screenshot 灯箱无法通过 Esc 关闭`);
+        }
+        const infographics = page.locator('.antv-infographic');
+        for (let infographicIndex = 0; infographicIndex < await infographics.count(); infographicIndex += 1) {
+          const infographic = infographics.nth(infographicIndex);
+          const canvas = infographic.locator('.antv-infographic-canvas');
+          await infographic.scrollIntoViewIfNeeded();
+          await infographic.getByRole('button', { name: /^放大信息图$/ }).click();
+          await page.waitForTimeout(250);
+          if (Number(await canvas.getAttribute('data-scale')) <= 1.05) failures.push(`${prefix}: Infographic 放大控制无效`);
+          await infographic.getByRole('button', { name: /^重置信息图缩放$/ }).click();
+          await page.waitForTimeout(250);
+          if (Math.abs(Number(await canvas.getAttribute('data-scale')) - 1) > 0.01) failures.push(`${prefix}: Infographic 复位控制无效`);
+          const surface = canvas.locator('svg, canvas').first();
+          await surface.evaluate((element) => { element.dataset.zoomGateIdentity = 'stable'; });
+          const infographicViewport = infographic.locator('.antv-infographic-viewport');
+          await infographicViewport.dispatchEvent('wheel', { deltaY: -100, ctrlKey: true });
+          await page.waitForTimeout(250);
+          const infographicWheelScale = await canvas.evaluate((element) => new DOMMatrix(getComputedStyle(element).transform).a);
+          if (infographicWheelScale <= 1.001) failures.push(`${prefix}: Infographic 滚轮缩放无效`);
+          const infographicTransformBeforeDrag = await canvas.evaluate((element) => getComputedStyle(element).transform);
+          const infographicBounds = await infographicViewport.boundingBox();
+          if (infographicBounds) {
+            const x = infographicBounds.x + infographicBounds.width / 2;
+            const y = Math.max(80, Math.min(page.viewportSize().height - 80, infographicBounds.y + 80));
+            await page.mouse.move(x, y);
+            await page.mouse.down();
+            await page.mouse.move(x + 60, y + 30, { steps: 5 });
+            await page.mouse.up();
+            const infographicTransformAfterDrag = await canvas.evaluate((element) => getComputedStyle(element).transform);
+            if (infographicTransformAfterDrag === infographicTransformBeforeDrag) failures.push(`${prefix}: Infographic 放大后无法拖拽`);
+          }
+          await infographic.getByRole('button', { name: /^重置信息图缩放$/ }).click();
+          await page.waitForTimeout(250);
+          await infographic.getByRole('button', { name: /^放大信息图$/ }).click();
+          await page.waitForTimeout(250);
+          await infographic.getByRole('button', { name: /^缩小信息图$/ }).click();
+          await page.waitForTimeout(250);
+          if (Math.abs(Number(await canvas.getAttribute('data-scale')) - 1) > 0.01) failures.push(`${prefix}: Infographic 放大后无法正常缩小`);
+          if (await surface.getAttribute('data-zoom-gate-identity') !== 'stable') failures.push(`${prefix}: Infographic 缩放时发生了不必要的重新渲染`);
+        }
+        const mermaidFrames = page.locator('.mermaid-frame');
+        for (let mermaidIndex = 0; mermaidIndex < await mermaidFrames.count(); mermaidIndex += 1) {
+          const mermaid = mermaidFrames.nth(mermaidIndex);
+          await mermaid.scrollIntoViewIfNeeded();
+          const target = mermaid.locator('.mermaid-svg');
+          await mermaid.getByRole('button', { name: /^放大流程图$/ }).click();
+          await page.waitForTimeout(250);
+          if (Number(await target.getAttribute('data-scale')) <= 1.05) failures.push(`${prefix}: Mermaid 放大控制无效`);
+          const mermaidViewport = mermaid.locator('.mermaid-canvas');
+          const transformBeforeDrag = await target.evaluate((element) => getComputedStyle(element).transform);
+          const bounds = await mermaidViewport.boundingBox();
+          if (bounds) {
+            const x = bounds.x + bounds.width / 2;
+            const y = Math.max(80, Math.min(page.viewportSize().height - 80, bounds.y + bounds.height / 2));
+            await page.mouse.move(x, y);
+            await page.mouse.down();
+            await page.mouse.move(x + 60, y + 30, { steps: 5 });
+            await page.mouse.up();
+            const transformAfterDrag = await target.evaluate((element) => getComputedStyle(element).transform);
+            if (transformAfterDrag === transformBeforeDrag) failures.push(`${prefix}: Mermaid 放大后无法拖拽`);
+          }
+          await mermaid.getByRole('button', { name: /^重置流程图缩放$/ }).click();
+          await page.waitForTimeout(250);
+          if (Math.abs(Number(await target.getAttribute('data-scale')) - 1) > 0.01) failures.push(`${prefix}: Mermaid 复位控制无效`);
         }
       }
       await context.close();

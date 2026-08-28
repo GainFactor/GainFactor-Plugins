@@ -1,9 +1,11 @@
 'use client';
 
 import type { CSSProperties, ReactNode } from 'react';
-import { Children, useEffect, useState } from 'react';
-import { Expand, X } from 'lucide-react';
+import { Children, useEffect, useRef, useState } from 'react';
+import { createPortal } from 'react-dom';
+import { Plus, X } from 'lucide-react';
 import { FigureFrame } from './figure-frame';
+import { InteractiveCanvasControls, useInteractiveCanvas } from './interactive-canvas';
 
 export type ScreenshotProps = {
   src: string;
@@ -25,15 +27,27 @@ export function Screenshot({
   maxHeight = '70vh',
 }: ScreenshotProps) {
   const [open, setOpen] = useState(false);
+  const closeButtonRef = useRef<HTMLButtonElement>(null);
+  const lightboxViewportRef = useRef<HTMLDivElement>(null);
+  const lightboxImageRef = useRef<HTMLImageElement>(null);
   const description = title?.trim() || caption?.trim() || evidenceId?.trim() || '产品截图';
+  const panzoom = useInteractiveCanvas({ viewportRef: lightboxViewportRef, targetRef: lightboxImageRef, enabled: open, refreshKey: src });
 
   useEffect(() => {
     if (!open) return;
+    const previousFocus = document.activeElement instanceof HTMLElement ? document.activeElement : null;
+    const previousOverflow = document.body.style.overflow;
     const closeOnEscape = (event: KeyboardEvent) => {
       if (event.key === 'Escape') setOpen(false);
     };
+    document.body.style.overflow = 'hidden';
     document.addEventListener('keydown', closeOnEscape);
-    return () => document.removeEventListener('keydown', closeOnEscape);
+    closeButtonRef.current?.focus();
+    return () => {
+      document.body.style.overflow = previousOverflow;
+      document.removeEventListener('keydown', closeOnEscape);
+      previousFocus?.focus();
+    };
   }, [open]);
 
   return <>
@@ -48,17 +62,28 @@ export function Screenshot({
       <button type="button" className="gf-screenshot-trigger" onClick={() => setOpen(true)} aria-label={`放大查看：${description}`}>
         {/* eslint-disable-next-line @next/next/no-img-element */}
         <img src={src} alt={description} style={{ maxHeight }} />
-        <span className="gf-screenshot-expand"><Expand aria-hidden="true" />查看原图</span>
+        <span className="gf-screenshot-expand"><Plus aria-hidden="true" />查看原图</span>
       </button>
     </div>
     </FigureFrame>
-    {open ? (
+    {open ? createPortal((
       <div className="gf-screenshot-lightbox" data-device={device} role="dialog" aria-modal="true" aria-label={description} onClick={() => setOpen(false)}>
-        <button type="button" onClick={() => setOpen(false)} aria-label="关闭原图"><X aria-hidden="true" /></button>
-        {/* eslint-disable-next-line @next/next/no-img-element */}
-        <img src={src} alt={description} onClick={(event) => event.stopPropagation()} />
+        <button ref={closeButtonRef} type="button" onClick={() => setOpen(false)} aria-label="关闭原图"><X aria-hidden="true" /></button>
+        <div className="gf-screenshot-lightbox-controls" onClick={(event) => event.stopPropagation()}>
+          <InteractiveCanvasControls label="图片" controller={panzoom} />
+        </div>
+        <div
+          ref={lightboxViewportRef}
+          className="gf-screenshot-lightbox-viewport"
+          role="region"
+          aria-label="图片画布，按 Ctrl 或 Command 配合滚轮缩放，放大后可拖动"
+          onClick={(event) => event.stopPropagation()}
+        >
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img ref={lightboxImageRef} src={src} alt={description} draggable={false} />
+        </div>
       </div>
-    ) : null}
+    ), document.body) : null}
   </>;
 }
 

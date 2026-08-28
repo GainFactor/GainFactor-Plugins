@@ -13,7 +13,7 @@ description: 'Review test design and readiness, 测试评审。Use when: Test Sp
 
 - 审查结论除人类可读报告外，必须按 `$document-publisher` 的 `publishing/review-findings` 生成 `docs/gainfactor/{subject-slug}/test-spec.review.json`，目标正文为同目录 `test-spec.mdx`。
 - 每个 issue 必须指向目标正文真实存在的 `sectionId`；没有问题时使用空数组，不制造占位问题。
-- 校验后调用 `$document-publisher` 的 `publishing/publish`，以 artifact `test-spec` 和 `--review` 更新同一门户条目；挂载不表示测试执行结果已经放行。
+- 校验后调用 `$document-publisher` 的 `publishing/publish`，以 artifact `test-spec` 和 `--review` 更新同一门户条目；默认终点为 `imported`，用户要求查看评审时才到 `previewed`，不触发 Full；挂载不表示测试执行结果已经放行。
 - 只有用户明确要求仅聊天审查或不写文件时才跳过 sidecar 与门户更新。
 
 你是测试门禁评审者。你的职责是审查独立测试包是否完整、可执行、与上游基线一致，并在有执行证据时评估其是否达到进入发布准备的测试门槛。

@@ -1,16 +1,9 @@
 'use client';
 
-import { Expand, Minus, Plus, RotateCcw } from 'lucide-react';
 import { useTheme } from 'next-themes';
-import { useEffect, useId, useRef, useState, type PointerEvent } from 'react';
+import { useEffect, useId, useRef, useState } from 'react';
 import { FigureFrame } from './figure-frame';
-
-const controls = [
-  { icon: Minus, label: '缩小', delta: -0.1 },
-  { icon: Plus, label: '放大', delta: 0.1 },
-] as const;
-
-const clampWheelDelta = (value: number) => Math.max(-60, Math.min(60, value * 0.35));
+import { InteractiveCanvasControls, useInteractiveCanvas } from './interactive-canvas';
 let renderQueue: Promise<void> = Promise.resolve();
 let elkRegistered = false;
 
@@ -27,12 +20,10 @@ export function Mermaid({ chart }: { chart: string }) {
   const { resolvedTheme } = useTheme();
   const containerRef = useRef<HTMLDivElement>(null);
   const canvasRef = useRef<HTMLDivElement>(null);
-  const dragRef = useRef({ active: false, x: 0, y: 0, offsetX: 0, offsetY: 0 });
+  const panTargetRef = useRef<HTMLDivElement>(null);
   const [svg, setSvg] = useState('');
   const [error, setError] = useState(false);
-  const [scale, setScale] = useState(1);
-  const [offset, setOffset] = useState({ x: 0, y: 0 });
-  const changeScale = (delta: number) => setScale((value) => Math.min(2.5, Math.max(0.2, value + delta)));
+  const panzoom = useInteractiveCanvas({ viewportRef: canvasRef, targetRef: panTargetRef, enabled: Boolean(svg), refreshKey: svg, minScale: 0.2, maxScale: 2.5 });
 
   useEffect(() => {
     let cancelled = false;
@@ -125,90 +116,22 @@ export function Mermaid({ chart }: { chart: string }) {
     };
   }, [chart, id, resolvedTheme]);
 
-  useEffect(() => {
-    const canvas = canvasRef.current;
-    if (!canvas) return;
-
-    const handleWheel = (event: globalThis.WheelEvent) => {
-      if (event.ctrlKey || event.metaKey) {
-        event.preventDefault();
-        changeScale(event.deltaY > 0 ? -0.1 : 0.1);
-        return;
-      }
-
-      const horizontalDelta = event.shiftKey ? event.deltaY : event.deltaX;
-      if (!event.shiftKey && Math.abs(horizontalDelta) <= Math.abs(event.deltaY)) return;
-
-      event.preventDefault();
-      setOffset((value) => ({
-        x: value.x - clampWheelDelta(horizontalDelta),
-        y: value.y,
-      }));
-    };
-
-    canvas.addEventListener('wheel', handleWheel, { passive: false });
-    return () => canvas.removeEventListener('wheel', handleWheel);
-  }, []);
-
-  const reset = () => {
-    setScale(1);
-    setOffset({ x: 0, y: 0 });
-  };
   const fullscreen = () => containerRef.current?.requestFullscreen?.();
-
-  const handlePointerDown = (event: PointerEvent<HTMLDivElement>) => {
-    const canvas = canvasRef.current;
-    if (!canvas || event.button !== 0) return;
-    dragRef.current = { active: true, x: event.clientX, y: event.clientY, offsetX: offset.x, offsetY: offset.y };
-    canvas.setPointerCapture(event.pointerId);
-    canvas.dataset.dragging = 'true';
-  };
-
-  const handlePointerMove = (event: PointerEvent<HTMLDivElement>) => {
-    const canvas = canvasRef.current;
-    const drag = dragRef.current;
-    if (!canvas || !drag.active) return;
-    setOffset({ x: drag.offsetX + event.clientX - drag.x, y: drag.offsetY + event.clientY - drag.y });
-  };
-
-  const stopDragging = (event: PointerEvent<HTMLDivElement>) => {
-    const canvas = canvasRef.current;
-    dragRef.current.active = false;
-    if (canvas?.hasPointerCapture(event.pointerId)) canvas.releasePointerCapture(event.pointerId);
-    if (canvas) delete canvas.dataset.dragging;
-  };
 
   return (
     <div ref={containerRef} className="mermaid-fullscreen-root">
     <FigureFrame className="mermaid-frame" title="流程图" actions={
-        <span className="mermaid-controls">
-          {controls.map(({ icon: Icon, label, delta }) => (
-            <button key={label} type="button" aria-label={label} onClick={() => changeScale(delta)}>
-              <Icon aria-hidden="true" />
-            </button>
-          ))}
-          <output className="mermaid-scale" aria-live="polite">{Math.round(scale * 100)}%</output>
-          <button type="button" aria-label="重置缩放" onClick={reset}>
-            <RotateCcw aria-hidden="true" />
-          </button>
-          <button type="button" aria-label="全屏查看" onClick={fullscreen}>
-            <Expand aria-hidden="true" />
-          </button>
-        </span>}>
+        <InteractiveCanvasControls label="流程图" controller={panzoom} onFullscreen={fullscreen} disabled={!svg} />}>
       <div
         className="mermaid-canvas"
         ref={canvasRef}
-        onPointerDown={handlePointerDown}
-        onPointerMove={handlePointerMove}
-        onPointerUp={stopDragging}
-        onPointerCancel={stopDragging}
       >
         {error ? (
           <p role="alert">流程图暂时无法渲染，请检查图表语法。</p>
         ) : svg ? (
           <div
             className="mermaid-svg"
-            style={{ transform: `translate3d(${offset.x}px, ${offset.y}px, 0) scale(${scale})` }}
+            ref={panTargetRef}
             dangerouslySetInnerHTML={{ __html: svg }}
           />
         ) : (

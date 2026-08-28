@@ -13,7 +13,7 @@ description: 'Review test strategy, 测试策略评审。Use when: 测试策略�
 
 - 审查结论除人类可读报告外，必须按 `$document-publisher` 的 `publishing/review-findings` 生成 `docs/gainfactor/{subject-slug}/test-strategy.review.json`，目标正文为同目录 `test-strategy.mdx`。
 - 每个 issue 必须指向目标正文真实存在的 `sectionId`；没有问题时使用空数组，不制造占位问题。
-- 校验后调用 `$document-publisher` 的 `publishing/publish`，以 artifact `test-strategy` 和 `--review` 更新同一门户条目；挂载失败时保留评审文件并明确报告。
+- 校验后调用 `$document-publisher` 的 `publishing/publish`，以 artifact `test-strategy` 和 `--review` 更新同一门户条目；默认终点为 `imported`，用户要求查看评审时才到 `previewed`，不触发 Full；挂载失败时保留评审文件并明确报告。
 - 只有用户明确要求仅聊天审查或不写文件时才跳过 sidecar 与门户更新。
 
 你是测试策略评审门禁。你的职责是审查测试策略是否完整、可执行、无关键遗漏，并决定它是否可以作为 LLD 与 test-spec 的测试基线。

@@ -10,6 +10,7 @@ import {
 import { useEffect, useRef, useState } from 'react';
 import dynamicIconImports from 'lucide-react/dynamicIconImports';
 import { FigureFrame } from './figure-frame';
+import { InteractiveCanvasControls, useInteractiveCanvas } from './interactive-canvas';
 
 type IconName = keyof typeof dynamicIconImports;
 
@@ -48,10 +49,14 @@ setDefaultFont('system-ui');
 registerResourceLoader(async ({ data }) => loadLucideIcon(data));
 
 export function Infographic({ syntax, caption }: { syntax: string; caption?: string }) {
+  const fullscreenRef = useRef<HTMLDivElement>(null);
+  const viewportRef = useRef<HTMLDivElement>(null);
   const containerRef = useRef<HTMLDivElement>(null);
   const [error, setError] = useState<string>();
   const [rendered, setRendered] = useState(false);
   const templateFamily = syntax.match(/^infographic\s+([a-z0-9]+)-/)?.[1] ?? 'unknown';
+  const fullscreen = () => fullscreenRef.current?.requestFullscreen?.();
+  const panzoom = useInteractiveCanvas({ viewportRef, targetRef: containerRef, enabled: rendered, refreshKey: syntax, maxScale: 2.5 });
 
   useEffect(() => {
     const container = containerRef.current;
@@ -167,7 +172,26 @@ export function Infographic({ syntax, caption }: { syntax: string; caption?: str
     };
   }, [syntax]);
 
-  return <FigureFrame className="antv-infographic" caption={caption} error={error ? <><strong>图形渲染失败</strong><span>{error}</span></> : null}>
-    <div ref={containerRef} className="antv-infographic-canvas" data-template-family={templateFamily} aria-busy={!rendered && !error} />
-  </FigureFrame>;
+  return (
+    <div ref={fullscreenRef} className="antv-infographic-fullscreen-root">
+      <FigureFrame
+        className="antv-infographic"
+        title="信息图"
+        actions={
+          <InteractiveCanvasControls label="信息图" controller={panzoom} onFullscreen={fullscreen} disabled={!rendered} />
+        }
+        caption={caption}
+        error={error ? <><strong>图形渲染失败</strong><span>{error}</span></> : null}
+      >
+        <div ref={viewportRef} className="antv-infographic-viewport" role="region" aria-label="信息图画布，按 Ctrl 或 Command 配合滚轮缩放">
+          <div
+            ref={containerRef}
+            className="antv-infographic-canvas"
+            data-template-family={templateFamily}
+            aria-busy={!rendered && !error}
+          />
+        </div>
+      </FigureFrame>
+    </div>
+  );
 }
